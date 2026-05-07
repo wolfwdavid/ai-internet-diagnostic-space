@@ -1,0 +1,55 @@
+[project]
+name = "ai-internet-diagnostic-space"
+version = "0.1.0"
+description = "AI Internet Diagnostic — Hugging Face Space (Gradio + LightGBM verdict UI)."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.13"
+authors = [{ name = "WolfDavid", email = "mkarurosun@gmail.com" }]
+dependencies = [
+    "wifi-diag-schema>=1.0.0,<2.0.0",
+    # NOTE: Gradio is NOT pinned here — HF Space build resolves it from README
+    # frontmatter `sdk_version: 6.13.0` (Pitfall 7: avoid double-pinning).
+    # Phase 3 will add: anthropic, pandas, plotly, etc.
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.7",
+    "mypy>=1.13",
+    "pytest>=8.0",
+    # Local dev: install Gradio explicitly here so `uv sync --all-extras --dev`
+    # can run app.py locally. Pinned to 6.13.x to mirror HF Space's
+    # `sdk_version: 6.13.0` (Pitfall 7: local environment must match the
+    # deployed environment for the runtime version assertion in app.py to hold).
+    "gradio>=6.13,<6.14",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app.py"]
+
+[tool.uv.sources]
+# Local dev: resolve wifi-diag-schema from the sibling repo while v1.0.0 is
+# still pre-PyPI. CI swaps to the PyPI release after the schema repo's first
+# tag push. Mirrors the same pattern used in the model repo's pyproject.
+wifi-diag-schema = { path = "../wifi-diag-schema", editable = true }
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+
+[tool.mypy]
+python_version = "3.13"
+ignore_missing_imports = true  # standard mode per D-16 (only schema gets --strict)

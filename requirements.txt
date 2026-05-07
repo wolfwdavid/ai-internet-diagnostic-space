@@ -1,0 +1,8 @@
+# HF Space requirements.txt
+# IMPORTANT (Pitfall 7): Do NOT add a `gradio` line here. The HF Space build
+# resolves Gradio from the README frontmatter `sdk_version: 6.13.0`.
+# Adding gradio here would create a double-pin source of drift (the prior
+# incident in the project's history). README is the single source of truth.
+
+wifi-diag-schema>=1.0.0,<2.0.0
+# Phase 3 adds: anthropic, pandas, plotly, etc.

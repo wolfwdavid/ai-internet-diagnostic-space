@@ -1,0 +1,25 @@
+name: Sync to HF Hub
+
+on:
+  push:
+    tags: ['v*.*.*']
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push to HF Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          pip install -U "huggingface_hub[cli]"
+          hf auth login --token "$HF_TOKEN" --add-to-git-credential
+          hf upload-large-folder \
+            --repo-type space \
+            --repo-id WolfDavid/ai-internet-diagnostic \
+            ./
