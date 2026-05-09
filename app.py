@@ -1,9 +1,11 @@
-"""AI Internet Diagnostic — Hugging Face Space.
+"""AI Internet Diagnostic -- Hugging Face Space (Phase 3 verdict UI shell).
 
-Phase 1 Space deliverable: hello-world shell. The Phase 1 goal is to lock the
-Python 3.13 + Gradio 6.13.x pin combo via the `space-build-sanity.yml` CI gate
-BEFORE any application code (Phase 3) adds complexity. Per CONTEXT D-18 and
-PITFALLS.md Pitfall 7 (the prior project's pin-drift incident).
+Phase 3 plan 03-01 replaces the Phase 1 hello-world with the Synthetic +
+Live two-tab structure. Subsequent plans (03-02..03-06) wire the verdict
+card, timeline, scenarios, narrator-cache, and exports.
+
+The runtime version assertions below are Pitfall 7 (gradio pin drift) and
+Pitfall F (python_version unquoted) mitigations. DO NOT remove.
 """
 from __future__ import annotations
 
@@ -11,8 +13,7 @@ import sys
 
 import gradio as gr
 
-# Runtime version assertions (RESEARCH Pitfall 7 mitigation #2): catch silent
-# SDK-metadata drift on first launch.
+# Pitfall 7 + Pitfall F: runtime version assertions (DO NOT remove).
 assert gr.__version__.startswith("6.13"), (
     f"Expected Gradio 6.13.x, got {gr.__version__}"
 )
@@ -20,14 +21,57 @@ assert sys.version_info[:2] == (3, 13), (
     f"Expected Python 3.13, got {sys.version_info}"
 )
 
+from src.space.ui.cold_start import COLD_START_MARKDOWN  # noqa: E402
 
-demo = gr.Interface(
-    fn=lambda x: f"Phase 1 hello-world. You typed: {x}",
-    inputs="text",
-    outputs="text",
-    title="AI Internet Diagnostic (Phase 1 hello-world)",
-    description="Phase 3 will replace this with the real diagnostic UI.",
-)
+
+with gr.Blocks(title="AI Internet Diagnostic") as demo:
+    # UI-04 cold-start banner: top-of-page so it's visible during the first
+    # request after a wake-from-sleep cycle. Banner copy ("Space is waking up
+    # -- first request takes ~30s.") lives in src/space/ui/cold_start.py so
+    # plan 03-02 can swap to a `gr.Status()` skeleton without re-touching app.py.
+    gr.Markdown(COLD_START_MARKDOWN)
+
+    gr.Markdown("# AI Internet Diagnostic")
+    gr.Markdown(
+        "_Tells you the specific reason your Wi-Fi just dropped -- "
+        "evidence-grounded, confidence-scored attribution._"
+    )
+
+    with gr.Tabs():
+        # D-SYNTH-03: Synthetic declared FIRST so Gradio renders it as the
+        # default landing tab. A casual visitor with no install lands here.
+        with gr.Tab("Synthetic"):
+            gr.Markdown("### Synthetic scenarios")
+            gr.Markdown(
+                "_Plan 03-03 wires the 8 scenario cards + Random scenario button._"
+            )
+
+        # D-SYNTH-04: Live tab v1 shell -- empty state + agent install CTA
+        # (Plan 03-06) + 'planned flow' preview asset (text-only Markdown
+        # callout per Claude's discretion in CONTEXT.md, cheapest viable).
+        with gr.Tab("Live"):
+            gr.Markdown("### Live diagnosis")
+            gr.Markdown(
+                "Connect the local agent to diagnose your real Wi-Fi.\n\n"
+                "_Plan 03-06 wires the agent install CTA. "
+                "Live SSE transport ships in Phase 5._"
+            )
+            # D-SYNTH-04 static preview of the planned Live-mode flow.
+            # Format choice (Markdown vs PNG vs GIF vs Lottie) was Claude's
+            # discretion; Markdown picked as cheapest viable -- no binary
+            # asset to commit, no design tool roundtrip, screen-reader
+            # friendly by default. Future v1.x can swap this single block
+            # for a richer asset without touching the surrounding shell.
+            gr.Markdown(
+                "> **Planned flow** (D-SYNTH-04 preview)\n"
+                "> 1. Install the local agent on your laptop.\n"
+                "> 2. Agent collects 802.1X / DHCP / RADIUS telemetry every second.\n"
+                "> 3. On a disconnect, the agent uploads a 30-second window to this Space.\n"
+                "> 4. Space runs the same classifier + anomaly detector you see in the Synthetic tab.\n"
+                "> 5. Verdict + drill-down timeline appears here, with full evidence citations.\n"
+                ">\n"
+                "> _Live SSE transport ships in Phase 5; this preview honors D-SYNTH-04._"
+            )
 
 
 if __name__ == "__main__":
