@@ -22,6 +22,7 @@ assert sys.version_info[:2] == (3, 13), (
 )
 
 from src.space.ui.cold_start import COLD_START_MARKDOWN  # noqa: E402
+from src.space.ui.synthetic_tab import build_synthetic_tab  # noqa: E402
 
 
 with gr.Blocks(title="AI Internet Diagnostic") as demo:
@@ -41,10 +42,11 @@ with gr.Blocks(title="AI Internet Diagnostic") as demo:
         # D-SYNTH-03: Synthetic declared FIRST so Gradio renders it as the
         # default landing tab. A casual visitor with no install lands here.
         with gr.Tab("Synthetic"):
-            gr.Markdown("### Synthetic scenarios")
-            gr.Markdown(
-                "_Plan 03-03 wires the 8 scenario cards + Random scenario button._"
-            )
+            # Plan 03-03 wires the 8 scenario cards + Random button + analyzing
+            # animation (D-SYNTH-01..03, UI-03). Verdict-card / timeline
+            # builders are owned by plan 03-02 (defensive imports inside
+            # synthetic_tab.py fall back to inline stubs if 03-02 hasn't landed).
+            build_synthetic_tab()
 
         # D-SYNTH-04: Live tab v1 shell -- empty state + agent install CTA
         # (Plan 03-06) + 'planned flow' preview asset (text-only Markdown
