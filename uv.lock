@@ -28,6 +28,7 @@ dependencies = [
     { name = "pyod" },
     { name = "scikit-learn" },
     { name = "tenacity" },
+    { name = "wifi-diag-narrator" },
     { name = "wifi-diag-schema" },
 ]
 
@@ -55,6 +56,7 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.7" },
     { name = "scikit-learn", specifier = ">=1.8,<2.0" },
     { name = "tenacity", specifier = ">=9.0,<10.0" },
+    { name = "wifi-diag-narrator", editable = "../wifi-diag-narrator" },
     { name = "wifi-diag-schema", editable = "../wifi-diag-schema" },
 ]
 provides-extras = ["dev"]
@@ -1760,6 +1762,29 @@ sdist = { url = "https://files.pythonhosted.org/packages/1f/93/041fca8274050e40e
 wheels = [
     { url = "https://files.pythonhosted.org/packages/31/a3/5b1562db76a5a488274b2332a97199b32d0442aca0ed193697fd47786316/uvicorn-0.46.0-py3-none-any.whl", hash = "sha256:bbebbcbed972d162afca128605223022bedd345b7bc7855ce66deb31487a9048", size = 70926, upload-time = "2026-04-23T07:15:58.355Z" },
 ]
+
+[[package]]
+name = "wifi-diag-narrator"
+version = "0.1.0"
+source = { editable = "../wifi-diag-narrator" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "tenacity" },
+    { name = "wifi-diag-schema" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "anthropic", marker = "extra == 'dev'", specifier = ">=0.97,<1.0" },
+    { name = "anthropic", marker = "extra == 'llm'", specifier = ">=0.97,<1.0" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.13" },
+    { name = "pydantic", specifier = ">=2.13,<3.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.7" },
+    { name = "tenacity", specifier = ">=9.0,<10.0" },
+    { name = "wifi-diag-schema", editable = "../wifi-diag-schema" },
+]
+provides-extras = ["llm", "dev"]
 
 [[package]]
 name = "wifi-diag-schema"

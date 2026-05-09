@@ -8,6 +8,7 @@ requires-python = ">=3.13"
 authors = [{ name = "WolfDavid", email = "mkarurosun@gmail.com" }]
 dependencies = [
     "wifi-diag-schema>=1.1.0,<2.0.0",
+    "wifi-diag-narrator>=0.1.0,<1.0.0",  # plan 03-04: templated + LLM narrator + citation guardrail
     "anthropic>=0.97,<1.0",            # narrator (lazy-imported at runtime per Pitfall C)
     "plotly>=6.5,<7.0",                # timeline figure (D-TIMELINE-04..15)
     "pandas>=2.2,<3.0",                # telemetry frame manipulation
@@ -20,7 +21,6 @@ dependencies = [
     "pyarrow>=18.0",                   # vendored model.features uses pq.read_table
     # NOTE: Gradio is NOT pinned here — HF Space build resolves it from
     # README frontmatter `sdk_version: 6.13.0` (Pitfall 7).
-    # NOTE: wifi-diag-narrator added in plan 03-04 once that repo exists.
 ]
 
 [project.optional-dependencies]
@@ -47,6 +47,10 @@ packages = ["app.py", "src/space"]
 # still pre-PyPI. CI swaps to the PyPI release after the schema repo's first
 # tag push. Mirrors the same pattern used in the model repo's pyproject.
 wifi-diag-schema = { path = "../wifi-diag-schema", editable = true }
+# Same editable-sibling pattern for the narrator package (plan 03-04). The
+# Space's cache-regen pipeline (plan 03-05) will pip-install via the [llm]
+# extra; local dev resolves through this editable path so iteration is fast.
+wifi-diag-narrator = { path = "../wifi-diag-narrator", editable = true }
 
 [tool.pytest.ini_options]
 minversion = "8.0"
