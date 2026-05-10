@@ -47,6 +47,7 @@ import gradio as gr
 import plotly.graph_objects as go
 
 from src.space.inference import _ANOMALY_THRESHOLD
+from src.space.narration_cache import load_cached_narration
 from src.space.scenarios.catalog import SCENARIOS, SCENARIOS_BY_SLUG
 from src.space.scenarios.runner import run_scenario
 from src.space.ui.timeline import build_timeline
@@ -65,10 +66,28 @@ def card_click_handler(slug: str) -> Tuple[str, str, go.Figure]:
     D-SYNTH-02: brief 'Analyzing telemetry...' pause (~1.2s) before reveal.
     The classifier IS running on real telemetry; the sleep guarantees the
     user perceives the analysis step.
+
+    SCEN-02 (plan 03-05): the narrator output (headline, suggested_fix,
+    evidence) is loaded from ``cache/narrations/{slug}.json`` rather than
+    invoked at request time. Zero per-visitor Anthropic API spend
+    (D-NARRATOR-05 + Pitfall 10 mitigation). Defense-in-depth fallback to
+    ``narrate_templated`` if the cache file is missing for any reason
+    (LLM-05 / D-NARRATOR-03).
     """
     time.sleep(1.2)  # D-SYNTH-02 -- Analyzing telemetry... animation
     scenario = SCENARIOS_BY_SLUG[slug]
-    verdict, scores, frames = run_scenario(slug)
+    classifier_verdict, scores, frames = run_scenario(slug)
+
+    # SCEN-02: load pre-cached narrator output (zero per-visitor LLM cost).
+    try:
+        verdict = load_cached_narration(slug)
+    except FileNotFoundError:
+        # Defense-in-depth fallback: templated narrator (LLM-05). Lazy
+        # import keeps the templated narrator off the startup hot path.
+        from wifi_diag_narrator.templated import narrate_templated
+
+        verdict = narrate_templated(classifier_verdict, frames)
+
     verdict_html = build_verdict_card(verdict)
     what_to_do_html = build_what_to_do_card(verdict)
     # Window length in seconds for the timeline x-axis label (D-TIMELINE-09).

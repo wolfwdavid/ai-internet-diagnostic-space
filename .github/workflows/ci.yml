@@ -35,3 +35,11 @@ jobs:
 
       - name: Unit tests
         run: uv run pytest -x --tb=short
+
+      - name: Cache narration validation gate (D-NARRATOR-06)
+        # Hard-fails the build if any cached narration's citations break,
+        # if the cached top_class drifts from the live classifier (Pitfall E),
+        # or if the cached headline exceeds D-VERDICT-06 max_length=140.
+        # Fix: run `make cache-narrations` (Anthropic) or
+        #      `make cache-narrations-templated` (offline) and commit the diff.
+        run: uv run pytest tests/test_narrations_cache.py -x --tb=short
