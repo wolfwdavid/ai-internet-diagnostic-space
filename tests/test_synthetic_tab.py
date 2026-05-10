@@ -21,20 +21,32 @@ _SYN_TAB = _REPO / "src" / "space" / "ui" / "synthetic_tab.py"
 
 
 def test_random_button() -> None:
-    """random_scenario_handler returns (verdict_html, what_to_do_html, fig)."""
-    verdict_html, what_to_do_html, fig = random_scenario_handler()
+    """random_scenario_handler returns (verdict_html, what_to_do_html, fig, verdict).
+
+    Plan 03-06 added the 4th element (Verdict for gr.State) so the export
+    buttons can serialize the most-recent click without re-running the
+    scenario.
+    """
+    from wifi_diag_schema.verdict import Verdict
+
+    verdict_html, what_to_do_html, fig, verdict = random_scenario_handler()
     assert isinstance(verdict_html, str) and len(verdict_html) > 0
     assert isinstance(what_to_do_html, str)
     assert isinstance(fig, go.Figure)
+    assert isinstance(verdict, Verdict)
 
 
 def test_card_handler_dispatches_by_slug() -> None:
     """Every scenario slug runs successfully through card_click_handler."""
+    from wifi_diag_schema.verdict import Verdict
+
     for s in SCENARIOS:
-        verdict_html, what_to_do_html, fig = card_click_handler(s.slug)
+        verdict_html, what_to_do_html, fig, verdict = card_click_handler(s.slug)
         assert isinstance(verdict_html, str), f"{s.slug}: verdict_html not str"
         assert isinstance(what_to_do_html, str), f"{s.slug}: what_to_do_html not str"
         assert isinstance(fig, go.Figure), f"{s.slug}: fig not go.Figure"
+        # Plan 03-06: 4th element threads Verdict to gr.State for UI-05 exports.
+        assert isinstance(verdict, Verdict), f"{s.slug}: verdict not Verdict"
 
 
 def test_grid_has_8_cards() -> None:
@@ -78,6 +90,10 @@ def test_build_synthetic_tab_does_not_raise() -> None:
     assert "card_buttons" in components
     assert "verdict_pane" in components
     assert "timeline_pane" in components
+    # Plan 03-06 (UI-05): verdict_state + export buttons.
+    assert "verdict_state" in components
+    assert "md_btn" in components
+    assert "json_btn" in components
     # 8 card buttons (D-SYNTH-01 4x2 grid).
     assert len(components["card_buttons"]) == 8
 

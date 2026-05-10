@@ -59,10 +59,17 @@ with gr.Blocks(title="AI Internet Diagnostic") as demo:
         # callout per Claude's discretion in CONTEXT.md, cheapest viable).
         with gr.Tab("Live"):
             gr.Markdown("### Live diagnosis")
+            # UI-06 CTA (plan 03-06): 'Try it on a real network -- install the
+            # local agent' on the Live tab. Phase 4 owns the README install
+            # instructions at github.com/wolfwdavid/ai-internet-diagnostic-agent.
             gr.Markdown(
                 "Connect the local agent to diagnose your real Wi-Fi.\n\n"
-                "_Plan 03-06 wires the agent install CTA. "
-                "Live SSE transport ships in Phase 5._"
+                "### Try it on a real network -- install the local agent\n\n"
+                "Run the agent on Windows / macOS / Linux to send real telemetry "
+                "to this Space.\n\n"
+                "**Install:** [github.com/wolfwdavid/ai-internet-diagnostic-agent]"
+                "(https://github.com/wolfwdavid/ai-internet-diagnostic-agent)\n\n"
+                "_Live SSE transport ships in Phase 5._"
             )
             # D-SYNTH-04 static preview of the planned Live-mode flow.
             # Format choice (Markdown vs PNG vs GIF vs Lottie) was Claude's
