@@ -137,9 +137,8 @@ def build_timeline(
     loss = [_safe_get(f, "ping_continuity.packet_loss_pct", 0.0) for f in frames]
     dns = [_safe_get(f, "dns_resolution_ms", 0.0) for f in frames]
 
-    fig = make_subplots(
-        rows=4,
-        cols=1,
+    # D-TIMELINE-04: 4 stacked subplot panels (RSSI / Ping / DNS / Events).
+    fig = make_subplots(rows=4, cols=1,
         shared_xaxes=True,
         vertical_spacing=0.05,
         row_heights=[0.30, 0.30, 0.20, 0.20],
@@ -305,11 +304,8 @@ def build_timeline(
                 width=[width],
                 marker=dict(
                     color="rgba(0, 0, 0, 0)",
-                    pattern=dict(
-                        shape="/",
-                        fgcolor="rgba(255, 0, 0, 0.4)",
-                        size=8,
-                    ),
+                    # D-TIMELINE-11 (Pitfall B PASS): diagonal-stripe a11y overlay.
+                    pattern=dict(shape="/", fgcolor="rgba(255, 0, 0, 0.4)", size=8),
                 ),
                 name="anomaly band",
                 showlegend=(first_anom_x is None),  # only legend the first
