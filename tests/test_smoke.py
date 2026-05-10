@@ -138,3 +138,43 @@ def test_layout_order() -> None:
         f"verdict -> what-to-do -> timeline order broken in app.py: "
         f"verdict@{i_v}, what-to-do@{i_w}, timeline@{i_t}"
     )
+
+
+# --- Phase 3 plan 03-06 surface (UI-05 export + UI-06 CTA) ------------------
+
+
+def test_cta_present() -> None:
+    """UI-06: 'Try it on a real network' CTA visible on Synthetic + Live tabs."""
+    blob = _APP.read_text()
+    synth = (Path(__file__).parent.parent / "src/space/ui/synthetic_tab.py").read_text()
+    assert "Try it on a real network" in (blob + synth), (
+        "UI-06 CTA copy missing from both Synthetic and Live tab surfaces"
+    )
+
+
+def test_cta_links_to_agent_repo() -> None:
+    """UI-06: CTA points at the agent repo install instructions (Phase 4 owns)."""
+    blob = _APP.read_text()
+    synth = (Path(__file__).parent.parent / "src/space/ui/synthetic_tab.py").read_text()
+    assert "github.com/wolfwdavid/ai-internet-diagnostic-agent" in (blob + synth), (
+        "UI-06 CTA must link to the agent repo at github.com/wolfwdavid/ai-internet-diagnostic-agent"
+    )
+
+
+def test_export_buttons_in_synthetic_tab() -> None:
+    """UI-05: Synthetic tab references both export builders."""
+    synth = (Path(__file__).parent.parent / "src/space/ui/synthetic_tab.py").read_text()
+    assert "build_markdown_export" in synth, (
+        "UI-05: synthetic_tab must wire build_markdown_export"
+    )
+    assert "build_json_export" in synth, (
+        "UI-05: synthetic_tab must wire build_json_export"
+    )
+
+
+def test_export_label_present() -> None:
+    """UI-05: 'Export verdict' button label literal in synthetic_tab source."""
+    synth = (Path(__file__).parent.parent / "src/space/ui/synthetic_tab.py").read_text()
+    assert "Export verdict" in synth, (
+        "UI-05: synthetic_tab must render an 'Export verdict' control"
+    )
