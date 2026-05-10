@@ -46,6 +46,12 @@ with gr.Blocks(title="AI Internet Diagnostic") as demo:
             # animation (D-SYNTH-01..03, UI-03). Verdict-card / timeline
             # builders are owned by plan 03-02 (defensive imports inside
             # synthetic_tab.py fall back to inline stubs if 03-02 hasn't landed).
+            #
+            # D-VERDICT-08 stacked column layout order anchor (read by
+            # tests/test_smoke.py::test_layout_order):
+            #   1. build_verdict_card -> verdict + colored confidence badge
+            #   2. build_what_to_do_card -> recommended action
+            #   3. build_timeline -> 4-row Plotly drill-down timeline
             build_synthetic_tab()
 
         # D-SYNTH-04: Live tab v1 shell -- empty state + agent install CTA

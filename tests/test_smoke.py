@@ -121,3 +121,20 @@ def test_live_tab_planned_flow_preview() -> None:
     blob = _APP.read_text()
     assert "Planned flow" in blob, "D-SYNTH-04 preview asset missing from Live tab"
     assert "D-SYNTH-04" in blob, "D-SYNTH-04 decision ID not referenced in Live tab"
+
+
+def test_layout_order() -> None:
+    """D-VERDICT-08: stacked column order verdict -> what-to-do -> timeline.
+
+    Plan 03-02 ships anchor comments in app.py so this static-source test can
+    confirm the canonical ordering without instantiating Gradio Blocks. The
+    actual Gradio composition is in src/space/ui/synthetic_tab.py.
+    """
+    blob = _APP.read_text()
+    i_v = blob.find("build_verdict_card")
+    i_w = blob.find("build_what_to_do_card")
+    i_t = blob.find("build_timeline")
+    assert -1 < i_v < i_w < i_t, (
+        f"verdict -> what-to-do -> timeline order broken in app.py: "
+        f"verdict@{i_v}, what-to-do@{i_w}, timeline@{i_t}"
+    )
