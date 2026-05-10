@@ -23,6 +23,25 @@ The Gradio version is pinned in this README frontmatter (`sdk_version: 6.13.0`) 
 
 Python is pinned to 3.13 in both this frontmatter and `pyproject.toml`'s `requires-python`.
 
+## Cache regeneration (Anthropic narrator)
+
+The 8 synthetic scenarios ship with pre-generated narrator output cached at `cache/narrations/{slug}.json` (SCEN-02). At demo time, the Synthetic tab loads these JSONs instead of calling the LLM — zero per-visitor Anthropic API spend (D-NARRATOR-05; Pitfall 10 mitigation).
+
+To regenerate via Anthropic Haiku 4.5:
+
+1. Add `ANTHROPIC_API_KEY` as a repository secret: **Settings → Secrets and variables → Actions → New repository secret** (D-NARRATOR-09 — the key never lives on a developer machine).
+2. Open **Actions → Regenerate cached narrations → Run workflow** in the GitHub UI.
+3. Optionally specify a comma-separated scenario filter (default: `all`).
+4. The workflow opens a PR with the regenerated cache diff. Review and merge.
+
+Local bootstrap fallback (no API key required) — produces structurally-identical output via the templated narrator (LLM-05):
+
+```bash
+make cache-narrations-templated
+```
+
+CI hard-fails (D-NARRATOR-06) if any cached citation breaks against the regenerated telemetry, if the cached `top_class` drifts from the live classifier, or if the headline exceeds 140 chars. The fix is always: run the regen workflow (or the templated bootstrap) and commit the diff.
+
 ## License
 
 Apache-2.0.
