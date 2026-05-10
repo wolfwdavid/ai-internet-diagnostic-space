@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.1.0",
+  "top_class": "driver_power_save_wake",
+  "confidence": 0.6258100428436459,
+  "top_k": [
+    [
+      "driver_power_save_wake",
+      0.6258100428436459
+    ],
+    [
+      "ap_roam_rekey_fail",
+      0.06930112671833505
+    ],
+    [
+      "radius_timeout",
+      0.06463259048369009
+    ],
+    [
+      "dhcp_lease_churn",
+      0.05695128971699669
+    ],
+    [
+      "rf_sticky_client",
+      0.053768422433270034
+    ],
+    [
+      "auth_8021x_eap_fail",
+      0.05374939869666551
+    ],
+    [
+      "mac_randomization_reject",
+      0.03976834573452426
+    ],
+    [
+      "dns_resolver_fail",
+      0.03601878337287267
+    ],
+    [
+      "captive_portal_expiry",
+      0.0
+    ],
+    [
+      "isp_upstream_fail",
+      0.0
+    ]
+  ],
+  "headline": "Your Wi-Fi driver didn't fully wake up after sleep.",
+  "suggested_fix": "Disable U-APSD/aggressive power-save in your Wi-Fi adapter properties (Windows: Device Manager → Advanced).",
+  "evidence": [
+    {
+      "telemetry_path": "driver_state",
+      "claim": "Observed driver_state = error",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "rssi_dbm",
+      "claim": "Observed rssi_dbm = -85",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "per_packet_retry_count",
+      "claim": "Observed per_packet_retry_count = 9",
+      "attribution": null
+    }
+  ]
+}

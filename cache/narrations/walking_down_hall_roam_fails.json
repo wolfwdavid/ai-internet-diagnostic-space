@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.1.0",
+  "top_class": "ap_roam_rekey_fail",
+  "confidence": 0.43877884393721217,
+  "top_k": [
+    [
+      "ap_roam_rekey_fail",
+      0.43877884393721217
+    ],
+    [
+      "auth_8021x_eap_fail",
+      0.12720495135911108
+    ],
+    [
+      "radius_timeout",
+      0.10688135575503933
+    ],
+    [
+      "driver_power_save_wake",
+      0.09261880700818617
+    ],
+    [
+      "dhcp_lease_churn",
+      0.07512760575488736
+    ],
+    [
+      "rf_sticky_client",
+      0.07084025093727742
+    ],
+    [
+      "mac_randomization_reject",
+      0.04789754225616863
+    ],
+    [
+      "dns_resolver_fail",
+      0.040650642992117854
+    ],
+    [
+      "captive_portal_expiry",
+      0.0
+    ],
+    [
+      "isp_upstream_fail",
+      0.0
+    ]
+  ],
+  "headline": "Roaming to a new access point failed during the auth re-key step.",
+  "suggested_fix": "Toggle Wi-Fi off and on; this usually clears stuck roam state.",
+  "evidence": [
+    {
+      "telemetry_path": "bssid",
+      "claim": "Observed bssid = 5a6daff9e4abfddaf954d5eb3f905610fec6f549cb0ba5c2278b11ebd6787708",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "auth_event_class",
+      "claim": "Observed auth_event_class = eapol_m3_timeout",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "rssi_dbm",
+      "claim": "Observed rssi_dbm = -64",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "beacon_rssi_dbm",
+      "claim": "Observed beacon_rssi_dbm = -65",
+      "attribution": null
+    }
+  ]
+}

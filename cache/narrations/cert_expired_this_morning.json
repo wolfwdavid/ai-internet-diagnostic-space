@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.1.0",
+  "top_class": "auth_8021x_eap_fail",
+  "confidence": 0.5585052043403445,
+  "top_k": [
+    [
+      "auth_8021x_eap_fail",
+      0.5585052043403445
+    ],
+    [
+      "ap_roam_rekey_fail",
+      0.09865142963431765
+    ],
+    [
+      "radius_timeout",
+      0.06734156785518194
+    ],
+    [
+      "dhcp_lease_churn",
+      0.06426101661567528
+    ],
+    [
+      "rf_sticky_client",
+      0.060863136622546075
+    ],
+    [
+      "dns_resolver_fail",
+      0.05431627935003469
+    ],
+    [
+      "mac_randomization_reject",
+      0.05102695580571884
+    ],
+    [
+      "driver_power_save_wake",
+      0.04503440977618102
+    ],
+    [
+      "captive_portal_expiry",
+      0.0
+    ],
+    [
+      "isp_upstream_fail",
+      0.0
+    ]
+  ],
+  "headline": "Your network's 802.1X authentication failed during this session.",
+  "suggested_fix": "Re-enter your school/work credentials, or contact IT — your auth certificate may have expired.",
+  "evidence": [
+    {
+      "telemetry_path": "auth_event_class",
+      "claim": "Observed auth_event_class = 8021x_fail",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "ping_continuity.packet_loss_pct",
+      "claim": "Observed ping_continuity.packet_loss_pct = 0.008991192173097982",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "rssi_dbm",
+      "claim": "Observed rssi_dbm = -59",
+      "attribution": null
+    }
+  ]
+}

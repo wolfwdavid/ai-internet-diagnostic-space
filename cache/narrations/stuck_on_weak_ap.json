@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.1.0",
+  "top_class": "rf_sticky_client",
+  "confidence": 0.7384423841576246,
+  "top_k": [
+    [
+      "rf_sticky_client",
+      0.7384423841576246
+    ],
+    [
+      "driver_power_save_wake",
+      0.08217485929736691
+    ],
+    [
+      "dhcp_lease_churn",
+      0.07680493014616036
+    ],
+    [
+      "isp_upstream_fail",
+      0.05135321409224109
+    ],
+    [
+      "dns_resolver_fail",
+      0.051224612306606895
+    ],
+    [
+      "radius_timeout",
+      0.0
+    ],
+    [
+      "captive_portal_expiry",
+      0.0
+    ],
+    [
+      "auth_8021x_eap_fail",
+      0.0
+    ],
+    [
+      "mac_randomization_reject",
+      0.0
+    ],
+    [
+      "ap_roam_rekey_fail",
+      0.0
+    ]
+  ],
+  "headline": "Your laptop is stuck on a weak access point.",
+  "suggested_fix": "Move closer to a stronger access point, or toggle Wi-Fi off and on to force a roam.",
+  "evidence": [
+    {
+      "telemetry_path": "rssi_dbm",
+      "claim": "Observed rssi_dbm = -84",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "neighbor_ap_count_5ghz",
+      "claim": "Observed neighbor_ap_count_5ghz = 9",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "per_packet_retry_count",
+      "claim": "Observed per_packet_retry_count = 15",
+      "attribution": null
+    }
+  ]
+}

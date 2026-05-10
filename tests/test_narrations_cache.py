@@ -74,6 +74,4 @@ def test_cached_narration_evidence_uses_evidence_rules(scenario):
 def test_cached_narration_headline_within_max_length(scenario):
     """D-VERDICT-06: headline max_length=140 (Pydantic-enforced, but defense in depth)."""
     v = load_cached_narration(scenario.slug)
-    assert len(v.headline) <= 140, (
-        f"{scenario.slug}: headline length {len(v.headline)} > 140"
-    )
+    assert len(v.headline) <= 140, f"{scenario.slug}: headline length {len(v.headline)} > 140"

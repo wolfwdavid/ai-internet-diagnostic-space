@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.1.0",
+  "top_class": "dhcp_lease_churn",
+  "confidence": 0.5793752667694785,
+  "top_k": [
+    [
+      "dhcp_lease_churn",
+      0.5793752667694785
+    ],
+    [
+      "mac_randomization_reject",
+      0.10187346168247521
+    ],
+    [
+      "rf_sticky_client",
+      0.0961842380276181
+    ],
+    [
+      "ap_roam_rekey_fail",
+      0.06640745577897772
+    ],
+    [
+      "radius_timeout",
+      0.05732112187729178
+    ],
+    [
+      "auth_8021x_eap_fail",
+      0.05191974561339157
+    ],
+    [
+      "dns_resolver_fail",
+      0.03432041081069245
+    ],
+    [
+      "driver_power_save_wake",
+      0.012598299440074637
+    ],
+    [
+      "captive_portal_expiry",
+      0.0
+    ],
+    [
+      "isp_upstream_fail",
+      0.0
+    ]
+  ],
+  "headline": "The DHCP server didn't grant your laptop an IP address.",
+  "suggested_fix": "Contact IT — the DHCP pool may be exhausted.",
+  "evidence": [
+    {
+      "telemetry_path": "dhcp_event_class",
+      "claim": "Observed dhcp_event_class = none",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "ping_continuity.packet_loss_pct",
+      "claim": "Observed ping_continuity.packet_loss_pct = 100.0",
+      "attribution": null
+    }
+  ]
+}

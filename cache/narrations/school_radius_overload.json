@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.1.0",
+  "top_class": "radius_timeout",
+  "confidence": 0.5149516012804847,
+  "top_k": [
+    [
+      "radius_timeout",
+      0.5149516012804847
+    ],
+    [
+      "ap_roam_rekey_fail",
+      0.12459371703349877
+    ],
+    [
+      "auth_8021x_eap_fail",
+      0.08591695552648716
+    ],
+    [
+      "dhcp_lease_churn",
+      0.07517516607090761
+    ],
+    [
+      "driver_power_save_wake",
+      0.05789434726573764
+    ],
+    [
+      "rf_sticky_client",
+      0.05096153107571681
+    ],
+    [
+      "mac_randomization_reject",
+      0.04756246903975837
+    ],
+    [
+      "dns_resolver_fail",
+      0.04294421270740908
+    ],
+    [
+      "captive_portal_expiry",
+      0.0
+    ],
+    [
+      "isp_upstream_fail",
+      0.0
+    ]
+  ],
+  "headline": "The RADIUS server didn't respond — likely overloaded right now.",
+  "suggested_fix": "Wait 30 seconds and reconnect — the auth server is probably under heavy load.",
+  "evidence": [
+    {
+      "telemetry_path": "auth_event_class",
+      "claim": "Observed auth_event_class = eap_fail",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "ping_continuity.avg_rtt_ms",
+      "claim": "Observed ping_continuity.avg_rtt_ms = 93.48340764864597",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "ping_continuity.packet_loss_pct",
+      "claim": "Observed ping_continuity.packet_loss_pct = 2.4628772060140727",
+      "attribution": null
+    }
+  ]
+}

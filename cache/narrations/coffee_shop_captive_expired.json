@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.1.0",
+  "top_class": "captive_portal_expiry",
+  "confidence": 0.7488919947272127,
+  "top_k": [
+    [
+      "captive_portal_expiry",
+      0.7488919947272127
+    ],
+    [
+      "dhcp_lease_churn",
+      0.07871910371573224
+    ],
+    [
+      "mac_randomization_reject",
+      0.06144030567485389
+    ],
+    [
+      "dns_resolver_fail",
+      0.06074588080765484
+    ],
+    [
+      "isp_upstream_fail",
+      0.050202715074546246
+    ],
+    [
+      "radius_timeout",
+      0.0
+    ],
+    [
+      "auth_8021x_eap_fail",
+      0.0
+    ],
+    [
+      "ap_roam_rekey_fail",
+      0.0
+    ],
+    [
+      "driver_power_save_wake",
+      0.0
+    ],
+    [
+      "rf_sticky_client",
+      0.0
+    ]
+  ],
+  "headline": "Your captive-portal session expired — sign back in at the network's portal.",
+  "suggested_fix": "Open your browser and sign in at the network's captive portal page.",
+  "evidence": [
+    {
+      "telemetry_path": "captive_portal_detected",
+      "claim": "Observed captive_portal_detected = True",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "dns_resolution_ms",
+      "claim": "Observed dns_resolution_ms = 11.140630241267374",
+      "attribution": null
+    },
+    {
+      "telemetry_path": "network_mode",
+      "claim": "Observed network_mode = captive",
+      "attribution": null
+    }
+  ]
+}
