@@ -73,13 +73,7 @@ visible Markdown echo with the point info.
 4. If 0 clicks fire, bump the JS `setTimeout` to 500ms in
    `_PLOTLY_CLICK_JS` and re-test (per Pitfall A "Warning signs").
 
-**Experiment A result:** _PENDING -- awaiting user-deployed Space verification._
-
-> Replace this paragraph with one of:
-> - `Experiment A result: PASS -- clicks fired on N/10 points across two attempts;
->   payload echoed correctly in the Markdown.`
-> - `Experiment A result: FAIL -- 0 clicks fired even after bumping setTimeout to
->   500ms. JS bridge unreliable on this deployed Space.`
+**Experiment A result:** FAIL -- per user resume signal `unidirectional + fillpattern` (2026-05-09). The Plotly_click JS bridge is treated as unreliable on the deployed HF Space surface; D-TIMELINE-01/03 are downgraded to unidirectional citation linking for v1. Bidirectional add-back is recorded as a v1.x backlog item (see `.planning/BACKLOG.md`).
 
 ## Experiment B: anomaly band Bar overlay with fillpattern (Pitfall B)
 
@@ -99,13 +93,7 @@ SVG inspect).
    `<pattern>` element with `id` containing the trace UID exists in the
    rendered SVG.
 
-**Experiment B result:** _PENDING -- awaiting user-deployed Space verification._
-
-> Replace this paragraph with one of:
-> - `Experiment B result: PASS -- diagonal stripes visible; <pattern> element
->   present in SVG.`
-> - `Experiment B result: FAIL -- row 2 renders flat red; no <pattern> element
->   in the SVG (fillpattern silently ignored on this Plotly+Gradio combo).`
+**Experiment B result:** PASS -- per user resume signal `unidirectional + fillpattern` (2026-05-09). The diagonal-stripe `pattern.shape='/'` Bar overlay is treated as rendering correctly; D-TIMELINE-11 a11y intent ships as a fillpattern Bar overlay in the production timeline.
 
 ## Decisions
 
@@ -120,15 +108,9 @@ correct timeline implementation branch.
 | FAIL   | PASS   | Downgrade to unidirectional (evidence -> frame pulse only); keep fillpattern.   | D-TIMELINE-01/03 v1.x add-back tracked.                 |
 | FAIL   | FAIL   | Downgrade both: unidirectional + plain rect + text annotation.                  | Both downgrades; v1.x add-back tracked.                 |
 
-**Decision -- citation linking:** _PENDING_
+**Decision -- citation linking:** Decision: downgrade to unidirectional citation linking; v1.x add-back tracked in `.planning/BACKLOG.md` ("Plotly bidirectional citation linking -- JS bridge requires HF Space deploy verification; downgraded to unidirectional in v1 per spike outcome 2026-05-09").
 
-> Replace with: `Decision: lock bidirectional citation linking (D-TIMELINE-01/03 ship as written).`
-> OR: `Decision: downgrade to unidirectional citation linking; v1.x add-back tracked.`
-
-**Decision -- anomaly band:** _PENDING_
-
-> Replace with: `Decision: ship Bar-overlay fillpattern (D-TIMELINE-11 ships as written).`
-> OR: `Decision: fall back to plain rect + 'anomaly region' text annotation (D-TIMELINE-11 a11y intent preserved).`
+**Decision -- anomaly band:** Decision: ship Bar-overlay fillpattern (D-TIMELINE-11 ships as written -- diagonal-stripe `pattern.shape='/'` overlay).
 
 ## Resume-signal
 
@@ -145,7 +127,7 @@ plans 03-03, 03-05, and 03-06 to wire JS bridge calls (or omit them).
 > No other text on that line. The line below is a placeholder that must be
 > overwritten before plan 03-02 Task 3 runs.
 
-Resume-signal: PENDING
+Resume-signal: unidirectional + fillpattern
 
 ## After the user reports outcomes
 
@@ -154,7 +136,7 @@ The plan 03-02 executor (continuation invocation) will:
 1. Replace the two `_PENDING_` result paragraphs with concrete
    `Experiment A result: PASS|FAIL -- ...` and `Experiment B result: ...` lines.
 2. Replace the two `_PENDING_` decision paragraphs with the concrete decisions.
-3. Replace the placeholder `Resume-signal: PENDING` with the canonical line.
+3. Replace the placeholder `Resume-signal: PENDING` with the canonical line. **(2026-05-09: replaced with `Resume-signal: unidirectional + fillpattern`.)**
 4. Commit (`chore(03-02): spike outcomes recorded`).
 5. Proceed to Task 2 (verdict-card + what-to-do-card builders, TDD) and
    Task 3 (4-row Plotly timeline, TDD) selecting the correct branch from
