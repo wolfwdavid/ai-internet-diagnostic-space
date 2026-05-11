@@ -44,6 +44,13 @@ from src.space.live.owner_session import (
 )
 from src.space.live.redaction import redact_to_schema
 
+# GAP-1 closure (Phase 6 plan 06-01): narrate the verdict before the
+# complete yield. Mirrors the agent's local-only pattern in
+# agent/inference.py::run_local_inference. Without this, the live SSE
+# path emits the Phase 2 stub headline ("Pre-Phase-3 stub: ...") and
+# an empty evidence list -- breaking Phase 5 Success Criterion #1.
+from wifi_diag_narrator.templated import narrate_templated
+
 __all__ = ["live_diagnose", "_ORCH", "_SPACE_VERSION"]
 
 
@@ -162,6 +169,36 @@ def live_diagnose(
     yield computing
 
     verdict, anomaly_scores = _ORCH.diagnose(redacted)
+
+    # ------------------------------------------------------------------
+    # 6b. Narrate the verdict before the terminal yield (GAP-1 closure).
+    # ------------------------------------------------------------------
+    # Mirror agent/inference.py::run_local_inference -- the templated
+    # narrator (LLM-free) swaps the Phase 2 stub headline /
+    # suggested_fix / evidence with class-specific, citation-validated
+    # narrator output. Without this swap, the live SSE final yield
+    # emits "Pre-Phase-3 stub: classifier predicts <class>" verbatim,
+    # which is the broken-marquee-demo gap from
+    # .planning/v1.0.0-MILESTONE-AUDIT.md::GAP-1.
+    #
+    # The narrator is deterministic and LLM-free; it adds <5ms over a
+    # 30-frame window per Phase 4 inference benchmarks. No new Space
+    # dependencies -- wifi-diag-narrator is already in pyproject.toml
+    # via [tool.uv.sources] sibling-path (plan 06-03 swaps to PyPI).
+    #
+    # ``narrate_templated`` walks dotted telemetry paths via
+    # ``_resolve_path`` which requires ``isinstance(cur, dict)`` -- so
+    # the TelemetryFrame Pydantic models in ``redacted`` MUST be dumped
+    # to dicts before the call, else every citation lookup returns None
+    # and the evidence list comes back empty (silent regression of
+    # LLM-02 / Truth 3 of this plan).
+    redacted_dicts = [f.model_dump() for f in redacted]
+    narrated = narrate_templated(verdict, redacted_dicts)
+    verdict = verdict.model_copy(update={
+        "headline": narrated.headline,
+        "suggested_fix": narrated.suggested_fix,
+        "evidence": narrated.evidence,
+    })
 
     # ------------------------------------------------------------------
     # 7. Final verdict (terminal).
