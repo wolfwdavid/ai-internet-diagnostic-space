@@ -13,24 +13,7 @@ test turns GREEN.
 """
 from __future__ import annotations
 
-from pathlib import Path
-
-import pytest
 from hypothesis import HealthCheck, given, settings, strategies as st
-
-# Wave 0 RED marker: skip the entire module if Task 1's redaction module hasn't
-# landed yet. Skip (rather than xfail) because hypothesis fixture injection runs
-# before pytest applies module-level xfail, raising a fixture-not-found ERROR
-# that pytest counts as a hard failure.
-_REDACT = (
-    Path(__file__).resolve().parent.parent.parent
-    / "src" / "space" / "live" / "redaction.py"
-)
-if not _REDACT.exists():
-    pytest.skip(
-        "RED -- vendored Space-side redaction lands in Task 1",
-        allow_module_level=True,
-    )
 
 PII_PAYLOADS = st.fixed_dictionaries({
     "evt_xml": st.sampled_from([
@@ -49,14 +32,19 @@ PII_PAYLOADS = st.fixed_dictionaries({
 })
 
 
-@given(PII_PAYLOADS)
+@given(payload=PII_PAYLOADS)
 @settings(
     max_examples=200,
     deadline=None,
     suppress_health_check=[HealthCheck.function_scoped_fixture],
 )
-def test_space_and_agent_redaction_byte_equal(payload, pinned_salt, agent_redact_fn):
-    """Same input -> byte-identical ``model_dump_json()`` from both redactors."""
+def test_space_and_agent_redaction_byte_equal(pinned_salt, agent_redact_fn, payload):
+    """Same input -> byte-identical ``model_dump_json()`` from both redactors.
+
+    Note on argument order: pytest fixtures MUST precede hypothesis-injected
+    ``@given`` args in the function signature (hypothesis injects positional
+    args after pytest is done resolving fixtures).
+    """
     from src.space.live.redaction import redact_to_schema as space_redact
 
     space_out = space_redact(dict(payload)).model_dump_json()

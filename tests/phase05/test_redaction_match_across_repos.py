@@ -14,8 +14,6 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import pytest
-
 _SPACE_REDACT = (
     Path(__file__).resolve().parent.parent.parent
     / "src" / "space" / "live" / "redaction.py"
@@ -24,14 +22,6 @@ _AGENT_REDACT = (
     Path(__file__).resolve().parent.parent.parent.parent
     / "ai-internet-diagnostic-agent" / "agent" / "redaction.py"
 )
-
-# Wave 0 RED marker: removed by Task 1 once src/space/live/redaction.py lands.
-if not _SPACE_REDACT.exists():
-    pytestmark = pytest.mark.xfail(
-        strict=True,
-        reason="RED -- vendored Space-side redaction lands in Task 1",
-        raises=(AssertionError, FileNotFoundError),
-    )
 
 # Match the DENY_PATTERNS list body across newlines.
 _DENY_RE = re.compile(
