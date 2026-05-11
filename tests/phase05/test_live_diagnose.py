@@ -26,17 +26,6 @@ from wifi_diag_schema.telemetry import PingContinuity
 
 _SPACE_ROOT = Path(__file__).resolve().parent.parent.parent
 
-# Wave 0 RED marker: removed by Task 2 once src/space/live/live_diagnose.py lands.
-# pytestmark stays declared at module-load so collection sees it even if tests
-# import the not-yet-existing implementation inside their bodies.
-_IMPL = _SPACE_ROOT / "src" / "space" / "live" / "live_diagnose.py"
-if not _IMPL.exists():
-    pytestmark = pytest.mark.xfail(
-        strict=True,
-        reason="RED -- live_diagnose implementation lands in Task 2",
-        raises=(ImportError, AttributeError, AssertionError),
-    )
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

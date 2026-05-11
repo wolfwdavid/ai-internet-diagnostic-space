@@ -86,3 +86,45 @@ def predict(frames: list[dict[str, Any]]) -> tuple[Verdict, np.ndarray]:
     # higher = more anomalous, matching the Phase 2 D-ANOM-02 threshold convention.
     scores = _ANOMALY_DETECTOR.decision_function(x_anom)
     return verdict, scores
+
+
+class InferenceOrchestrator:
+    """Object-oriented entrypoint for the Phase 5 ``live_diagnose`` generator.
+
+    Phase 3's module-level ``predict()`` already loads classifier + anomaly
+    detector once at import time. This class is a thin facade so Phase 5
+    code reads naturally as ``ORCH = InferenceOrchestrator(); ORCH.diagnose(...)``
+    (the interface plan 05-01 was authored against).
+
+    Accepts either a list of TelemetryFrame Pydantic models OR a list of dicts;
+    converts to dicts before delegating to ``predict()``.
+    """
+
+    def __init__(self) -> None:
+        # Module-level singletons (_CLASSIFIER, _ANOMALY_DETECTOR) are already
+        # loaded at import time; this constructor is a no-op other than asserting
+        # the artifacts are present.
+        assert _CLASSIFIER is not None
+        assert _ANOMALY_DETECTOR is not None
+
+    def diagnose(self, frames: list[Any]) -> tuple[Verdict, list[float]]:
+        """Run classifier + anomaly detector on a window.
+
+        Args:
+            frames: Either a list of ``TelemetryFrame`` Pydantic models or a list
+                of TelemetryFrame-shaped dicts. Models are converted via
+                ``model_dump()``.
+
+        Returns:
+            ``(verdict, anomaly_scores)`` where ``anomaly_scores`` is a Python
+            ``list[float]`` (the wire format used by ``live_diagnose``'s
+            ``state=complete`` yield).
+        """
+        dicts: list[dict[str, Any]] = []
+        for f in frames:
+            if hasattr(f, "model_dump"):
+                dicts.append(f.model_dump())
+            else:
+                dicts.append(dict(f))
+        verdict, scores = predict(dicts)
+        return verdict, [float(s) for s in scores]

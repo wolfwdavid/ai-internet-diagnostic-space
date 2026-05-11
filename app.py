@@ -23,6 +23,7 @@ assert sys.version_info[:2] == (3, 13), (
 
 from src.space.ui.cold_start import COLD_START_MARKDOWN  # noqa: E402
 from src.space.ui.synthetic_tab import build_synthetic_tab  # noqa: E402
+from src.space.live.live_diagnose import live_diagnose  # noqa: E402  # plan 05-01
 
 
 with gr.Blocks(title="AI Internet Diagnostic") as demo:
@@ -88,6 +89,29 @@ with gr.Blocks(title="AI Internet Diagnostic") as demo:
                 "> _Live SSE transport ships in Phase 5; this preview honors D-SYNTH-04._"
             )
 
+    # ------------------------------------------------------------------
+    # Plan 05-01: register live_diagnose as a named Gradio API endpoint
+    # (consumed by agent transport via gradio_client.Client.submit,
+    # api_name="live_diagnose"). NOT shown in the Tabs UI; pure API
+    # surface for the agent. Hidden components carry the four args.
+    # ------------------------------------------------------------------
+    live_handshake = gr.Textbox(visible=False, label="handshake_json")
+    live_frames = gr.JSON(visible=False, label="frames_json_list")
+    live_owner = gr.Textbox(visible=False, label="owner_key")
+    live_pair = gr.Textbox(visible=False, label="pair_code")
+    live_output = gr.JSON(visible=False, label="live_diagnose_output")
+    _live_trigger = gr.Button(visible=False)
+    _live_trigger.click(
+        fn=live_diagnose,
+        inputs=[live_handshake, live_frames, live_owner, live_pair],
+        outputs=[live_output],
+        api_name="live_diagnose",
+    )
+
+# RESEARCH OQ-2: Gradio generator streams require `demo.queue()`; concurrency
+# limit of 2 caps simultaneous live_diagnose sessions on the free-CPU tier
+# (the owner's dogfood session + at most one pair-code visitor in parallel).
+demo.queue(default_concurrency_limit=2, api_open=True)
 
 if __name__ == "__main__":
     demo.launch()
