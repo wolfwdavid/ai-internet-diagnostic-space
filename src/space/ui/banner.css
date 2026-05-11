@@ -1,0 +1,96 @@
+/* Phase 5 plan 05-03: connection-status banner CSS (UI-07).
+
+   Traffic-light palette + colorblind diagonal-stripe overlay (D-STATUS-08)
+   echoing Phase 3's D-TIMELINE-11 anomaly-band a11y pattern. Banner sits
+   above gr.Tabs() (D-STATUS-02), visible on both Synthetic and Live tabs
+   (D-STATUS-11). State transitions use a 300ms background fade
+   (D-STATUS-28). */
+
+.conn-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  margin: 0 0 0.5rem 0;
+  border-radius: 6px;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  font-size: 0.85rem;
+  transition: background-color 300ms ease-out;  /* D-STATUS-28 */
+}
+
+.conn-banner .conn-state {
+  font-weight: 600;
+}
+
+.conn-banner .conn-detail {
+  opacity: 0.85;
+}
+
+.conn-banner .conn-versions {
+  margin-left: auto;
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.conn-banner .conn-privacy {
+  opacity: 0.85;
+  font-size: 0.8rem;
+}
+
+/* Greens — happy path (Connected / Streaming / Computing / Complete). */
+.conn-handshake_ok,
+.conn-connected,
+.conn-streaming,
+.conn-computing,
+.conn-complete {
+  background: #d1fadf;
+  color: #065f46;
+}
+
+/* Greys — idle / unknown. */
+.conn-idle {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* Ambers — in-flight transient (Waking / Connecting / Reconnecting /
+   Stalled / Local-fallback). Diagonal-stripe overlay matches D-TIMELINE-11. */
+.conn-waking,
+.conn-connecting,
+.conn-reconnecting,
+.conn-stalled,
+.conn-local_fallback {
+  background: #fef3c7;
+  color: #78350f;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 6px,
+    rgba(120, 53, 15, 0.08) 6px,
+    rgba(120, 53, 15, 0.08) 12px
+  );
+}
+
+/* Persistent local-fallback (D-STATUS-25): does not auto-hide. */
+.conn-local_fallback.conn-persistent {
+  border: 2px solid #d97706;
+}
+
+/* Reds — terminal hard-error (Schema mismatch / Handshake failed /
+   Session rejected / Redaction failed / Live disabled). */
+.conn-schema_mismatch,
+.conn-handshake_failed,
+.conn-session_rejected,
+.conn-redaction_failed,
+.conn-live_disabled {
+  background: #fee2e2;
+  color: #991b1b;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 6px,
+    rgba(153, 27, 27, 0.12) 6px,
+    rgba(153, 27, 27, 0.12) 12px
+  );
+}
