@@ -111,16 +111,22 @@ def test_readme_sdk_version_pinned() -> None:
     )
 
 
-def test_live_tab_planned_flow_preview() -> None:
-    """D-SYNTH-04: Live tab v1 shell must include the 'planned flow' preview asset.
+def test_live_tab_uses_build_live_tab() -> None:
+    """Phase 5 plan 05-03: Live tab body delegated to src/space/ui/live_tab.py.
 
-    Format is Claude's discretion per CONTEXT.md -- text-only Markdown callout
-    chosen as cheapest viable; future PNG/GIF/Lottie can replace this in v1.x
-    without changing the surrounding shell.
+    Supersedes the Phase 3 D-SYNTH-04 'Planned flow' Markdown preview asset.
+    The v1 shell was an explicit placeholder pending Phase 5 live transport;
+    plan 05-03 replaces it with the page-level connection-status banner +
+    verdict/local-view composition that reuses the Phase 3 builders by
+    composition (UI-07 ROADMAP criterion).
     """
     blob = _APP.read_text()
-    assert "Planned flow" in blob, "D-SYNTH-04 preview asset missing from Live tab"
-    assert "D-SYNTH-04" in blob, "D-SYNTH-04 decision ID not referenced in Live tab"
+    assert "build_live_tab()" in blob, (
+        "Phase 5 plan 05-03 must call build_live_tab() inside the Live tab block"
+    )
+    assert "from src.space.ui.live_tab import build_live_tab" in blob, (
+        "Phase 5 plan 05-03 must import build_live_tab from src.space.ui.live_tab"
+    )
 
 
 def test_layout_order() -> None:
