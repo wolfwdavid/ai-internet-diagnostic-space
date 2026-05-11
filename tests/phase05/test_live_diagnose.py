@@ -204,3 +204,78 @@ def test_live_diagnose_registered_with_concurrency_2():
     assert 'api_name="live_diagnose"' in app_src, (
         'app.py must register live_diagnose with api_name="live_diagnose"'
     )
+
+
+def test_live_complete_verdict_is_narrated(synthetic_frames_json, pinned_salt):
+    """GAP-1 regression guard (Phase 6 plan 06-01).
+
+    Before Phase 6 the live SSE path emitted ``verdict.headline`` =
+    ``"Pre-Phase-3 stub: classifier predicts ..."`` because
+    ``live_diagnose.py`` skipped the narrator step that the
+    agent's local-only path performs. This test asserts the live path
+    now narrates the verdict before the ``state=complete`` yield --
+    the marquee live-demo gap from
+    .planning/v1.0.0-MILESTONE-AUDIT.md::GAP-1.
+
+    Removing the ``narrate_templated(verdict, redacted_dicts)`` call
+    from ``src/space/live/live_diagnose.py`` MUST cause this test to
+    fail.
+
+    Fixtures used (existing in this file / conftest.py):
+      - ``synthetic_frames_json`` -- 5 valid TelemetryFrame JSON strings
+      - ``pinned_salt`` -- pins BSSID salt so redaction is deterministic
+      - autouse ``_enable_owner_key`` -- sets OWNER_KEY env var
+    """
+    from wifi_diag_schema.handshake import make_handshake
+
+    from src.space.live.live_diagnose import live_diagnose
+
+    hs = make_handshake().model_dump_json()
+    yields = list(live_diagnose(
+        handshake_json=hs,
+        frames_json_list=synthetic_frames_json,
+        owner_key="test-owner-key",
+        pair_code=None,
+    ))
+
+    complete_yields = [y for y in yields if y.get("state") == "complete"]
+    assert len(complete_yields) == 1, (
+        f"expected exactly one state=complete yield, got "
+        f"{len(complete_yields)} -- all yields: "
+        f"{[y.get('state') for y in yields]}"
+    )
+    verdict = complete_yields[0]["verdict"]
+
+    # 1. Headline is narrated, not stubbed.
+    assert not verdict["headline"].startswith("Pre-Phase-3 stub:"), (
+        f"Live path emitted Phase 2 stub headline: {verdict['headline']!r}. "
+        "narrate_templated() call missing from live_diagnose.py?"
+    )
+    assert not verdict["headline"].startswith("Pre-narrator stub:"), (
+        f"Live path emitted pre-narrator stub headline: {verdict['headline']!r}. "
+        "narrate_templated() call missing from live_diagnose.py?"
+    )
+
+    # 2. suggested_fix is narrated, not stubbed.
+    assert "Pre-Phase-3 stub" not in verdict["suggested_fix"], (
+        f"Live path emitted stub suggested_fix: {verdict['suggested_fix']!r}"
+    )
+    assert "Pre-narrator stub" not in verdict["suggested_fix"], (
+        f"Live path emitted pre-narrator stub suggested_fix: "
+        f"{verdict['suggested_fix']!r}"
+    )
+
+    # 3. Evidence list populated (LLM-02 / citation guardrail invariant).
+    assert isinstance(verdict["evidence"], list), (
+        f"verdict.evidence must be a list, got {type(verdict['evidence'])}"
+    )
+    assert len(verdict["evidence"]) >= 1, (
+        "narrator returned empty evidence -- citation guardrail expects "
+        "at least one citation per narrated verdict"
+    )
+
+    # 4. Every evidence item carries a telemetry_path (LLM-02).
+    for i, item in enumerate(verdict["evidence"]):
+        assert "telemetry_path" in item, (
+            f"evidence[{i}] missing telemetry_path: {item!r}"
+        )
