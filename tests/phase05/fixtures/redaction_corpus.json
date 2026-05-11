@@ -1,0 +1,82 @@
+[
+  {
+    "label": "raw_mac_in_evt_xml",
+    "raw_payload": {
+      "ts": 1730000000.0,
+      "rssi": -60,
+      "os": "windows",
+      "network_mode": "enterprise",
+      "raw_bssid": "aa:bb:cc:dd:ee:ff",
+      "evt_xml": "<EventData><Data Name=\"MAC\">aa:bb:cc:dd:ee:ff</Data></EventData>"
+    },
+    "must_strip": ["evt_xml"]
+  },
+  {
+    "label": "eap_identity_school_email",
+    "raw_payload": {
+      "ts": 1730000001.0,
+      "rssi": -55,
+      "os": "windows",
+      "network_mode": "enterprise",
+      "raw_bssid": "11:22:33:44:55:66",
+      "Identity": "student@school.edu",
+      "evt_xml": "<EventData><Data Name=\"Identity\">student@school.edu</Data></EventData>"
+    },
+    "must_strip": ["Identity", "evt_xml"]
+  },
+  {
+    "label": "password_in_eap",
+    "raw_payload": {
+      "ts": 1730000002.0,
+      "rssi": -70,
+      "os": "macos",
+      "network_mode": "enterprise",
+      "raw_bssid": "12:34:56:78:9a:bc",
+      "Password": "hunter2",
+      "raw_message": "Password=hunter2"
+    },
+    "must_strip": ["Password", "raw_message"]
+  },
+  {
+    "label": "cert_subject_dn",
+    "raw_payload": {
+      "ts": 1730000003.0,
+      "rssi": -50,
+      "os": "linux",
+      "network_mode": "enterprise",
+      "raw_bssid": "de:ad:be:ef:00:01",
+      "UserCert": "CN=John Doe,OU=Students,O=ACME",
+      "evt_xml": "<EventData><Data Name=\"UserCert\">CN=John Doe</Data></EventData>"
+    },
+    "must_strip": ["UserCert", "evt_xml"]
+  },
+  {
+    "label": "captive_portal_with_email",
+    "raw_payload": {
+      "ts": 1730000004.0,
+      "rssi": -65,
+      "os": "windows",
+      "network_mode": "captive",
+      "raw_bssid": "00:11:22:33:44:55",
+      "raw_message": "captive portal redirect to login.school.edu for teacher@school.edu",
+      "captive_portal_detected": true
+    },
+    "must_strip": ["raw_message"]
+  },
+  {
+    "label": "kitchen_sink_pii",
+    "raw_payload": {
+      "ts": 1730000005.0,
+      "rssi": -45,
+      "os": "windows",
+      "network_mode": "enterprise",
+      "raw_bssid": "ab:cd:ef:01:23:45",
+      "Identity": "admin@school.edu",
+      "Password": "hunter2",
+      "UserCert": "CN=admin,OU=IT",
+      "evt_xml": "<EventData><Data Name=\"Password\">hunter2</Data><Data Name=\"MAC\">ab:cd:ef:01:23:45</Data></EventData>",
+      "username": "admin"
+    },
+    "must_strip": ["Identity", "Password", "UserCert", "evt_xml", "username"]
+  }
+]

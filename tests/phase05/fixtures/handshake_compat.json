@@ -1,0 +1,8 @@
+[
+  {"local": "1.1.0", "remote": "1.1.0", "expected": "match"},
+  {"local": "1.1.0", "remote": "1.1.5", "expected": "match"},
+  {"local": "1.1.0", "remote": "1.0.0", "expected": "minor_drift"},
+  {"local": "1.1.0", "remote": "2.0.0", "expected": "incompatible"},
+  {"local": "1.1.0", "remote": "1.2.3", "expected": "minor_drift"},
+  {"local": "1.1.0", "remote": "0.9.0", "expected": "incompatible"}
+]
