@@ -98,7 +98,7 @@ def test_no_gradio_in_requirements() -> None:
 
 def test_readme_python_version_quoted() -> None:
     """Pitfall F: python_version must be QUOTED in HF Space frontmatter."""
-    readme = _README.read_text()
+    readme = _README.read_text(encoding="utf-8")
     assert 'python_version: "3.13"' in readme, (
         "Pitfall F: python_version must be quoted (e.g. python_version: \"3.13\")"
     )
@@ -106,7 +106,7 @@ def test_readme_python_version_quoted() -> None:
 
 def test_readme_sdk_version_pinned() -> None:
     """Pitfall 7: sdk_version is the single source of truth for Gradio version."""
-    assert "sdk_version: 6.13.0" in _README.read_text(), (
+    assert "sdk_version: 6.13.0" in _README.read_text(encoding="utf-8"), (
         "README frontmatter must pin sdk_version: 6.13.0 (single source of truth)"
     )
 
