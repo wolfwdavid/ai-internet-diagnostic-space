@@ -8,7 +8,9 @@ requires-python = ">=3.13"
 authors = [{ name = "WolfDavid", email = "mkarurosun@gmail.com" }]
 dependencies = [
     "wifi-diag-schema>=1.1.0,<2.0.0",
-    "wifi-diag-narrator>=0.1.0,<1.0.0",  # plan 03-04: templated + LLM narrator + citation guardrail
+    # Bumped 06-03: v0.1.0 lacked public-API re-exports; v0.1.1 is the first
+    # PyPI release with `from wifi_diag_narrator import narrate_templated, ...`.
+    "wifi-diag-narrator>=0.1.1,<0.2.0",  # plan 03-04: templated + LLM narrator + citation guardrail
     "anthropic>=0.97,<1.0",            # narrator (lazy-imported at runtime per Pitfall C)
     "plotly>=6.5,<7.0",                # timeline figure (D-TIMELINE-04..15)
     "pandas>=2.2,<3.0",                # telemetry frame manipulation
@@ -28,6 +30,18 @@ dev = [
     "ruff>=0.7",
     "mypy>=1.13",
     "pytest>=8.0",
+    # 06-03: hypothesis + platformdirs are test-time-only deps that plan 05-01
+    # installed ad-hoc into the Space venv (per its SUMMARY's "if CI grows the
+    # matrix, this will move to optional-dependencies.dev" note). They were
+    # implicitly carried by the old uv.lock; once Task 4 stripped
+    # [tool.uv.sources] and regenerated the lock they disappeared, breaking
+    # tests/phase05/test_server_side_redaction_roundtrip.py (hypothesis import)
+    # and the cross-repo agent_redact_fn fixture (which imports agent.salt ->
+    # platformdirs). Declared explicitly here so `uv sync --all-extras --dev`
+    # always covers the suite; neither lands in the deployed Space image
+    # because they're under [project.optional-dependencies].dev.
+    "hypothesis>=6.0",
+    "platformdirs>=4.0",
     # Local dev: install Gradio explicitly here so `uv sync --all-extras --dev`
     # can run app.py locally. Pinned to 6.13.x to mirror HF Space's
     # `sdk_version: 6.13.0` (Pitfall 7: local environment must match the
@@ -42,15 +56,10 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["app.py", "src/space"]
 
-[tool.uv.sources]
-# Local dev: resolve wifi-diag-schema from the sibling repo while v1.0.0 is
-# still pre-PyPI. CI swaps to the PyPI release after the schema repo's first
-# tag push. Mirrors the same pattern used in the model repo's pyproject.
-wifi-diag-schema = { path = "../wifi-diag-schema", editable = true }
-# Same editable-sibling pattern for the narrator package (plan 03-04). The
-# Space's cache-regen pipeline (plan 03-05) will pip-install via the [llm]
-# extra; local dev resolves through this editable path so iteration is fast.
-wifi-diag-narrator = { path = "../wifi-diag-narrator", editable = true }
+# Sibling-path editable overrides for wifi-diag-schema + wifi-diag-narrator
+# were stripped in Phase 6 plan 06-03 once both packages reached PyPI
+# (schema 1.1.0 / narrator 0.1.1). Local dev no longer needs a sibling
+# checkout; uv sync pulls them as ordinary wheels.
 
 [tool.pytest.ini_options]
 minversion = "8.0"
