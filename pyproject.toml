@@ -7,7 +7,7 @@ license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
 authors = [{ name = "WolfDavid", email = "mkarurosun@gmail.com" }]
 dependencies = [
-    "wifi-diag-schema>=1.1.0,<2.0.0",
+    "wifi-diag-schema>=1.2,<2.0",
     # Bumped 06-03: v0.1.0 lacked public-API re-exports; v0.1.1 is the first
     # PyPI release with `from wifi_diag_narrator import narrate_templated, ...`.
     "wifi-diag-narrator>=0.1.1,<0.2.0",  # plan 03-04: templated + LLM narrator + citation guardrail
