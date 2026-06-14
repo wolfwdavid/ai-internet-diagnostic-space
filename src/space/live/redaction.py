@@ -1,6 +1,6 @@
 """Schema-layer PII redaction (PRIV-01 + Pitfall 6 mitigation) -- Space-side.
 
-# Vendored from ai-internet-diagnostic-agent/agent/redaction.py @ b5dc537c601a9f3e6b2d50c66e9c1a91b210efa6
+# Vendored from ai-internet-diagnostic-agent/agent/redaction.py @ 5f6ebb755e3d
 #
 # The function body, DENY_PATTERNS list, SCHEMA_ALLOWLIST, _ALLOWED_* sets, and
 # _coerce helper are byte-identical to the agent's redaction.py at that commit.
