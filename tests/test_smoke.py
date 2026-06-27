@@ -4,6 +4,7 @@ Extends the Phase 1 baseline (Python 3.13 + Gradio 6.13.x runtime check) with
 the Phase 3 plan 03-01 surface: two-tab Synthetic/Live shell, cold-start
 banner, and the D-SYNTH-04 'Planned flow' Live-tab preview asset.
 """
+
 from __future__ import annotations
 
 import importlib.util
@@ -34,17 +35,13 @@ def test_app_imports_cleanly() -> None:
 
 
 def test_python_313() -> None:
-    assert sys.version_info[:2] == (3, 13), (
-        f"Expected Python 3.13, got {sys.version_info}"
-    )
+    assert sys.version_info[:2] == (3, 13), f"Expected Python 3.13, got {sys.version_info}"
 
 
 def test_gradio_pin() -> None:
     import gradio as gr
 
-    assert gr.__version__.startswith("6.13"), (
-        f"Expected Gradio 6.13.x, got {gr.__version__}"
-    )
+    assert gr.__version__.startswith("6.13"), f"Expected Gradio 6.13.x, got {gr.__version__}"
 
 
 # --- Phase 3 plan 03-01 surface ---------------------------------------------
@@ -80,9 +77,7 @@ def test_runtime_assertions_preserved() -> None:
     assert 'gr.__version__.startswith("6.13")' in blob, (
         "Pitfall 7 runtime assertion missing (gradio version pin guard)"
     )
-    assert "sys.version_info[:2] == (3, 13)" in blob, (
-        "Python version runtime assertion missing"
-    )
+    assert "sys.version_info[:2] == (3, 13)" in blob, "Python version runtime assertion missing"
 
 
 def test_no_gradio_in_requirements() -> None:
@@ -100,7 +95,7 @@ def test_readme_python_version_quoted() -> None:
     """Pitfall F: python_version must be QUOTED in HF Space frontmatter."""
     readme = _README.read_text(encoding="utf-8")
     assert 'python_version: "3.13"' in readme, (
-        "Pitfall F: python_version must be quoted (e.g. python_version: \"3.13\")"
+        'Pitfall F: python_version must be quoted (e.g. python_version: "3.13")'
     )
 
 
@@ -163,24 +158,19 @@ def test_cta_links_to_agent_repo() -> None:
     blob = _APP.read_text()
     synth = (Path(__file__).parent.parent / "src/space/ui/synthetic_tab.py").read_text()
     assert "github.com/wolfwdavid/ai-internet-diagnostic-agent" in (blob + synth), (
-        "UI-06 CTA must link to the agent repo at github.com/wolfwdavid/ai-internet-diagnostic-agent"
+        "UI-06 CTA must link to the agent repo at "
+        "github.com/wolfwdavid/ai-internet-diagnostic-agent"
     )
 
 
 def test_export_buttons_in_synthetic_tab() -> None:
     """UI-05: Synthetic tab references both export builders."""
     synth = (Path(__file__).parent.parent / "src/space/ui/synthetic_tab.py").read_text()
-    assert "build_markdown_export" in synth, (
-        "UI-05: synthetic_tab must wire build_markdown_export"
-    )
-    assert "build_json_export" in synth, (
-        "UI-05: synthetic_tab must wire build_json_export"
-    )
+    assert "build_markdown_export" in synth, "UI-05: synthetic_tab must wire build_markdown_export"
+    assert "build_json_export" in synth, "UI-05: synthetic_tab must wire build_json_export"
 
 
 def test_export_label_present() -> None:
     """UI-05: 'Export verdict' button label literal in synthetic_tab source."""
     synth = (Path(__file__).parent.parent / "src/space/ui/synthetic_tab.py").read_text()
-    assert "Export verdict" in synth, (
-        "UI-05: synthetic_tab must render an 'Export verdict' control"
-    )
+    assert "Export verdict" in synth, "UI-05: synthetic_tab must render an 'Export verdict' control"

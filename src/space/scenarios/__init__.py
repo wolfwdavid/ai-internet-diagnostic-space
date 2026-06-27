@@ -5,6 +5,7 @@ Public API consumed by plan 03-05 (cached narrations) and the Synthetic tab UI:
     - SCENARIOS_BY_SLUG: dict[str, Scenario]
     - run_scenario(slug) -> (Verdict, np.ndarray, list[dict])
 """
+
 from __future__ import annotations
 
 from .catalog import SCENARIOS, SCENARIOS_BY_SLUG, Scenario

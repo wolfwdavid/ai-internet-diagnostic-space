@@ -14,12 +14,11 @@ Covers (per plan 05-03 acceptance criteria):
 - live_tab.py imports the Phase 3 builders (UI-07 reuse).
 - Synthetic tab is unbroken (build_synthetic_tab() still called).
 """
+
 from __future__ import annotations
 
 import re
 from pathlib import Path
-
-import pytest
 
 _REPO = Path(__file__).resolve().parents[2]
 APP_PATH = _REPO / "app.py"
@@ -41,9 +40,7 @@ def test_banner_above_tabs_in_source():
 def test_timer_polls_at_500ms():
     """D-STATUS-29: 500ms poll cadence."""
     src = APP_PATH.read_text(encoding="utf-8")
-    assert "gr.Timer(value=0.5)" in src, (
-        "expected gr.Timer(value=0.5) for D-STATUS-29 cadence"
-    )
+    assert "gr.Timer(value=0.5)" in src, "expected gr.Timer(value=0.5) for D-STATUS-29 cadence"
 
 
 def test_timer_tick_wired_to_poll_banner():
@@ -76,9 +73,7 @@ def test_verdict_view_visible_by_default():
     src = LIVE_TAB_PATH.read_text(encoding="utf-8")
     m = re.search(r"verdict_view\s*=\s*gr\.Column\(visible=(\w+)\)", src)
     assert m is not None, "could not find verdict_view = gr.Column(visible=...) in live_tab.py"
-    assert m.group(1) == "True", (
-        f"verdict_view must default to visible=True, got {m.group(1)}"
-    )
+    assert m.group(1) == "True", f"verdict_view must default to visible=True, got {m.group(1)}"
 
 
 def test_live_tab_imports_phase3_builders():

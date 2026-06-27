@@ -1,9 +1,11 @@
 """Phase 3 plan 03-03 -- 8-scenario catalog + deterministic runner contract.
 
 Tests the SCEN-01 surface: 8 named scenarios mapped 1:1 to DisconnectClass
-slugs (the 2 unmapped classes are dns_resolver_fail and isp_upstream_fail).
+slugs. The unmapped classes are dns_resolver_fail, isp_upstream_fail, and the
+schema 1.2.0 ``unknown`` OOD abstention class (which has no synthetic data).
 The runner produces deterministic verdicts from each scenario's fixed seed.
 """
+
 from __future__ import annotations
 
 from typing import get_args
@@ -27,7 +29,7 @@ _MAPPED_CLASSES = {
     "driver_power_save_wake",
     "rf_sticky_client",
 }
-_UNMAPPED = _ALL_CLASSES - _MAPPED_CLASSES  # {dns_resolver_fail, isp_upstream_fail}
+_UNMAPPED = _ALL_CLASSES - _MAPPED_CLASSES  # {dns_resolver_fail, isp_upstream_fail, unknown}
 
 
 def test_eight_scenarios() -> None:
@@ -36,10 +38,14 @@ def test_eight_scenarios() -> None:
 
 
 def test_class_mapping() -> None:
-    """SCEN-01: scenarios cover the 8 demo classes; 2 classes intentionally unmapped."""
+    """SCEN-01: scenarios cover the 8 demo classes; 3 classes intentionally unmapped.
+
+    dns_resolver_fail + isp_upstream_fail are out of the synthetic demo set;
+    ``unknown`` (schema 1.2.0 OOD abstention) has no synthetic data by design.
+    """
     class_slugs = {s.class_slug for s in SCENARIOS}
     assert class_slugs == _MAPPED_CLASSES
-    assert _UNMAPPED == {"dns_resolver_fail", "isp_upstream_fail"}
+    assert _UNMAPPED == {"dns_resolver_fail", "isp_upstream_fail", "unknown"}
 
 
 def test_all_scenario_slugs_unique() -> None:

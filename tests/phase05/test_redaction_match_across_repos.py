@@ -9,18 +9,20 @@ repos.
 Marked xfail-strict during Wave 0; Task 1 lands the Space-side redaction.py
 and this test turns GREEN.
 """
+
 from __future__ import annotations
 
 import re
 from pathlib import Path
 
 _SPACE_REDACT = (
-    Path(__file__).resolve().parent.parent.parent
-    / "src" / "space" / "live" / "redaction.py"
+    Path(__file__).resolve().parent.parent.parent / "src" / "space" / "live" / "redaction.py"
 )
 _AGENT_REDACT = (
     Path(__file__).resolve().parent.parent.parent.parent
-    / "ai-internet-diagnostic-agent" / "agent" / "redaction.py"
+    / "ai-internet-diagnostic-agent"
+    / "agent"
+    / "redaction.py"
 )
 
 # Match the DENY_PATTERNS list body across newlines.

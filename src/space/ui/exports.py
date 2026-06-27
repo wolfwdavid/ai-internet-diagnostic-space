@@ -20,11 +20,12 @@ Both functions are pure (no I/O on call after the cached pyproject read);
 ``gr.DownloadButton`` consumes the returned string via its ``value``
 attribute or the ``click(fn=...)`` event handler.
 """
+
 from __future__ import annotations
 
 import json
 import tomllib
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from functools import lru_cache
 from pathlib import Path
 
@@ -88,16 +89,14 @@ def build_markdown_export(verdict: Verdict) -> str:
     # Top-3 alternatives (rank 2 + rank 3 of the top_k=10 list).
     top3 = verdict.top_k[1:3]
     alternatives = "\n".join(
-        f"- {int(round(p * 100))}% -- {DISPLAY_NAMES[c]} (`{c}`)"
-        for c, p in top3
+        f"- {int(round(p * 100))}% -- {DISPLAY_NAMES[c]} (`{c}`)" for c, p in top3
     )
 
     # Evidence bullets -- preserve EvidenceItem.telemetry_path + claim shape so
     # the IT ticket reader can grep for a field-path quickly.
     if verdict.evidence:
         evidence_bullets = "\n".join(
-            f"- **{e.telemetry_path}**: {e.claim}"
-            for e in verdict.evidence
+            f"- **{e.telemetry_path}**: {e.claim}" for e in verdict.evidence
         )
     else:
         evidence_bullets = "_(no evidence -- citation guardrail stripped all claims)_"
@@ -132,7 +131,7 @@ def build_json_export(verdict: Verdict) -> str:
     envelope = {
         "verdict": verdict.model_dump(),
         # Z-suffix form (UTC, ISO 8601). Strict format for stable diffs.
-        "generated_at": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "generated_at": datetime.now(tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "space_version": _read_space_version(),
     }
     # default=str handles Decimal / datetime / etc. that may sneak into Pydantic

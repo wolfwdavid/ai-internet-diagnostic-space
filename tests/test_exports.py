@@ -4,6 +4,7 @@ Validates the IT-ticket-friendly Markdown formatter (4-section layout) and
 the JSON envelope shape `{verdict, generated_at, space_version}` that
 external tooling can round-trip through `Verdict.model_validate`.
 """
+
 from __future__ import annotations
 
 import json

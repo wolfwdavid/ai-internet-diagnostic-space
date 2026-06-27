@@ -31,6 +31,7 @@ This module is a SPIKE artifact: it stays in the codebase as a reference for
 the chosen implementation but is NOT imported from ``app.py``. Plan 03-02
 Task 3 wires the production timeline based on the spike outcome.
 """
+
 from __future__ import annotations
 
 import json
@@ -39,7 +40,6 @@ import gradio as gr
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-
 
 # === EXPERIMENT A: Plotly_click JS bridge =================================
 

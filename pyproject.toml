@@ -73,6 +73,15 @@ target-version = "py313"
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "W"]
 
+# redaction.py is vendored byte-equal from the agent (parity is asserted by
+# tests/phase05/test_redaction_match_across_repos.py). It must NOT be
+# reformatted or have lines wrapped, or the parity check breaks.
+[tool.ruff.lint.per-file-ignores]
+"src/space/live/redaction.py" = ["E501"]
+
+[tool.ruff.format]
+exclude = ["src/space/live/redaction.py"]
+
 [tool.mypy]
 python_version = "3.13"
 ignore_missing_imports = true  # standard mode per D-16 (only schema gets --strict)

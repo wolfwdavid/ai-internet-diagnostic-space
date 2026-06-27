@@ -4,6 +4,7 @@ Insertion order MATTERS for byte-identicality (RESEARCH Pattern 4 Critical note)
 the order below is the order classes are iterated in `generate.py`, which
 determines the order rows are appended to the Parquet table.
 """
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -26,14 +27,14 @@ GeneratorFn = Callable[[Generator], list[dict[str, Any]]]
 
 # CANONICAL ORDER — do NOT reorder without bumping schema/data version.
 GENERATORS: dict[str, GeneratorFn] = {
-    "auth_8021x_eap_fail":      gen_auth,
-    "ap_roam_rekey_fail":       gen_ap_roam,
-    "radius_timeout":           gen_radius,
-    "captive_portal_expiry":    gen_captive,
+    "auth_8021x_eap_fail": gen_auth,
+    "ap_roam_rekey_fail": gen_ap_roam,
+    "radius_timeout": gen_radius,
+    "captive_portal_expiry": gen_captive,
     "mac_randomization_reject": gen_mac_rand,
-    "dhcp_lease_churn":         gen_dhcp,
-    "dns_resolver_fail":        gen_dns,
-    "driver_power_save_wake":   gen_driver,
-    "rf_sticky_client":         gen_sticky,
-    "isp_upstream_fail":        gen_isp,
+    "dhcp_lease_churn": gen_dhcp,
+    "dns_resolver_fail": gen_dns,
+    "driver_power_save_wake": gen_driver,
+    "rf_sticky_client": gen_sticky,
+    "isp_upstream_fail": gen_isp,
 }

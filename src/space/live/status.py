@@ -9,6 +9,7 @@ thread, reads from the banner-poller thread. The state dict is intentionally
 in-process (not Redis-backed): RESEARCH OQ-4 documents that v1 ships
 single-worker on free CPU; multi-worker would require an external store.
 """
+
 from __future__ import annotations
 
 import threading

@@ -3,6 +3,7 @@
 Tests the 4x2 scenario card grid (D-SYNTH-01), the Random scenario button
 (UI-03), and the 'Analyzing telemetry...' demo theater (D-SYNTH-02).
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -69,6 +70,7 @@ def test_synthetic_tab_has_analyzing_pause() -> None:
     blob = _SYN_TAB.read_text(encoding="utf-8")
     # Look for time.sleep(<float between 1.0 and 2.0>) in the source.
     import re
+
     matches = re.findall(r"time\.sleep\(\s*(\d+(?:\.\d+)?)\s*\)", blob)
     assert matches, "D-SYNTH-02: no time.sleep() call found in synthetic_tab.py"
     # At least one pause must be in the [1.0, 2.0] band.
@@ -82,6 +84,7 @@ def test_synthetic_tab_has_analyzing_pause() -> None:
 def test_build_synthetic_tab_does_not_raise() -> None:
     """Smoke: build_synthetic_tab() executes inside a Blocks context without error."""
     import gradio as gr
+
     with gr.Blocks() as _demo:
         components = build_synthetic_tab()
     assert isinstance(components, dict)

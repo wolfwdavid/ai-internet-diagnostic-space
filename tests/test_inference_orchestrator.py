@@ -6,6 +6,7 @@ Validates the load-once predict-per-request shape contract:
 - anomaly scores are finite (sign convention -score_samples)
 - Module-level singletons are populated at import (no lazy load)
 """
+
 from __future__ import annotations
 
 import numpy as np

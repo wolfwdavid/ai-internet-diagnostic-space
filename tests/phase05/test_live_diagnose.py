@@ -13,16 +13,15 @@ State-machine contract under test (D-STATUS-24, D-STATUS-05, D-STATUS-17, D-STAT
 - ``app.py`` registers ``live_diagnose`` with ``default_concurrency_limit=2``
   (RESEARCH OQ-2 resolution).
 """
+
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import pytest
 from wifi_diag_schema import TelemetryFrame
 from wifi_diag_schema.handshake import HandshakeFrame, make_handshake
 from wifi_diag_schema.telemetry import PingContinuity
-
 
 _SPACE_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -103,6 +102,7 @@ def test_major_mismatch_yields_error(synthetic_frames_json):
 def test_minor_drift_warns_continues(synthetic_frames_json, pinned_salt):
     """Minor-version drift MUST yield ``handshake_ok`` with ``schema_drift=minor`` and continue."""
     import warnings
+
     from src.space.live.live_diagnose import live_diagnose
 
     hs = HandshakeFrame(schema_version="1.0.0").model_dump_json()
@@ -149,7 +149,8 @@ def test_redaction_failure_yields_red(pinned_salt):
 
 
 def test_final_yield_is_verdict(synthetic_frames_json, pinned_salt):
-    """After streaming all frames, generator MUST yield ``computing`` then ``complete`` with a Verdict."""
+    """After streaming all frames, generator MUST yield ``computing`` then
+    ``complete`` with a Verdict."""
     from src.space.live.live_diagnose import live_diagnose
 
     hs = make_handshake().model_dump_json()
@@ -231,12 +232,14 @@ def test_live_complete_verdict_is_narrated(synthetic_frames_json, pinned_salt):
     from src.space.live.live_diagnose import live_diagnose
 
     hs = make_handshake().model_dump_json()
-    yields = list(live_diagnose(
-        handshake_json=hs,
-        frames_json_list=synthetic_frames_json,
-        owner_key="test-owner-key",
-        pair_code=None,
-    ))
+    yields = list(
+        live_diagnose(
+            handshake_json=hs,
+            frames_json_list=synthetic_frames_json,
+            owner_key="test-owner-key",
+            pair_code=None,
+        )
+    )
 
     complete_yields = [y for y in yields if y.get("state") == "complete"]
     assert len(complete_yields) == 1, (
@@ -261,8 +264,7 @@ def test_live_complete_verdict_is_narrated(synthetic_frames_json, pinned_salt):
         f"Live path emitted stub suggested_fix: {verdict['suggested_fix']!r}"
     )
     assert "Pre-narrator stub" not in verdict["suggested_fix"], (
-        f"Live path emitted pre-narrator stub suggested_fix: "
-        f"{verdict['suggested_fix']!r}"
+        f"Live path emitted pre-narrator stub suggested_fix: {verdict['suggested_fix']!r}"
     )
 
     # 3. Evidence list populated (LLM-02 / citation guardrail invariant).
@@ -276,6 +278,4 @@ def test_live_complete_verdict_is_narrated(synthetic_frames_json, pinned_salt):
 
     # 4. Every evidence item carries a telemetry_path (LLM-02).
     for i, item in enumerate(verdict["evidence"]):
-        assert "telemetry_path" in item, (
-            f"evidence[{i}] missing telemetry_path: {item!r}"
-        )
+        assert "telemetry_path" in item, f"evidence[{i}] missing telemetry_path: {item!r}"

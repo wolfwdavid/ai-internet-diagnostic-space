@@ -9,6 +9,7 @@ The pair-code registry lives in module-level state -- per RESEARCH OQ-4 this
 is acceptable at v1 (single-worker Space) with the caveat that adding
 worker-replicas would require an external store (Redis, etc.).
 """
+
 from __future__ import annotations
 
 import os

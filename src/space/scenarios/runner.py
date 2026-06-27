@@ -9,6 +9,7 @@ verdict. This is the foundation of the plan 03-05 cache: the verdict and
 its top_k probabilities are reproducible given the committed scenario seeds
 and the v1.0.0 model artifacts.
 """
+
 from __future__ import annotations
 
 from typing import Any

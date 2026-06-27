@@ -11,6 +11,7 @@ The tests below exercise figure structure (4 rows, shared x-axis, fixed RSSI
 y-range, unified hover), the anomaly-band fillpattern Bar overlay, the
 lead-time annotation arrow, and the window-length title label.
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -38,12 +39,7 @@ def test_x_axis_zero_at_disconnect(sample_window):
     """D-TIMELINE-05: x-axis 0 = disconnect; pre-disconnect frames are negative."""
     fig = build_timeline(*_mk_input(sample_window))
     max_x = max(
-        (
-            max(t.x)
-            if hasattr(t, "x") and t.x is not None and len(t.x)
-            else -1e9
-            for t in fig.data
-        ),
+        (max(t.x) if hasattr(t, "x") and t.x is not None and len(t.x) else -1e9 for t in fig.data),
         default=-1e9,
     )
     assert abs(max_x) < 1.0, f"disconnect should be at x~=0, got max_x={max_x}"
@@ -83,9 +79,9 @@ def test_anomaly_band_has_fillpattern(sample_window):
 def test_lead_time_annotation(sample_window):
     """D-TIMELINE-06: lead-time arrow + label drawn from first red-band frame."""
     fig = build_timeline(*_mk_input(sample_window))
-    assert any(
-        "lead-time:" in (a.text or "") for a in fig.layout.annotations
-    ), "expected an annotation containing 'lead-time:'"
+    assert any("lead-time:" in (a.text or "") for a in fig.layout.annotations), (
+        "expected an annotation containing 'lead-time:'"
+    )
 
 
 def test_hovermode_unified(sample_window):

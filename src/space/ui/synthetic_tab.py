@@ -50,16 +50,14 @@ Plan 03-06 additions (UI-05 + UI-06):
     ``https://github.com/wolfwdavid/ai-internet-diagnostic-agent``.
     Phase 4 owns the README install instructions on that target.
 """
+
 from __future__ import annotations
 
 import random
 import tempfile
 import time
-from pathlib import Path
-from typing import Tuple
 
 import gradio as gr
-import plotly.graph_objects as go
 
 from src.space.inference import _ANOMALY_THRESHOLD
 from src.space.narration_cache import load_cached_narration
@@ -214,9 +212,7 @@ def build_synthetic_tab() -> dict:
 
     # Header
     gr.Markdown("### Synthetic scenarios")
-    gr.Markdown(
-        "_Click a scenario card to run a real classifier verdict, or roll the dice._"
-    )
+    gr.Markdown("_Click a scenario card to run a real classifier verdict, or roll the dice._")
 
     # UI-03: Random scenario button
     with gr.Row():
@@ -227,13 +223,9 @@ def build_synthetic_tab() -> dict:
     card_buttons: list[tuple[str, gr.Button]] = []
     for row_start in (0, 4):
         with gr.Row():
-            for s in SCENARIOS[row_start:row_start + 4]:
+            for s in SCENARIOS[row_start : row_start + 4]:
                 with gr.Column():
-                    gr.Markdown(
-                        f"**{s.display_name}**\n\n"
-                        f"_{s.description}_\n\n"
-                        f"`{s.network_mode}`"
-                    )
+                    gr.Markdown(f"**{s.display_name}**\n\n_{s.description}_\n\n`{s.network_mode}`")
                     btn = gr.Button(f"Run: {s.display_name}")
                     card_buttons.append((s.slug, btn))
     components["card_buttons"] = card_buttons

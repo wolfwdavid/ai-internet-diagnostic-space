@@ -10,6 +10,7 @@ Causal sequence:
 Distinguishing signal: BSSID change mid-window + auth_event_class flips to
 eapol_m3_timeout near end.
 """
+
 from __future__ import annotations
 
 from hashlib import sha256
@@ -56,36 +57,35 @@ def generate(rng: Generator) -> list[dict[str, Any]]:
         else:
             auth_evt = "eapol_m3_timeout"
 
-        avg_rtt = (
-            float(rng.normal(30, 10)) if i >= roam_at
-            else float(rng.normal(20, 5))
-        )
+        avg_rtt = float(rng.normal(30, 10)) if i >= roam_at else float(rng.normal(20, 5))
         loss_baseline = 5 if i >= m3_at else 0
-        frames.append({
-            "timestamp": t,
-            "os": os_choice,
-            "network_mode": "enterprise",
-            "rssi_dbm": rssi,
-            "bssid": bssid,
-            "bssid_mode": "hashed",
-            "channel": channel,
-            "ping_continuity": {
-                "window_ms": SAMPLE_INTERVAL_MS,
-                "avg_rtt_ms": avg_rtt,
-                "packet_loss_pct": float(max(0.0, rng.normal(loss_baseline, 1))),
-                "jitter_ms": float(max(0.0, rng.normal(4, 1))),
-            },
-            "latency_jitter_ms": float(max(0.0, rng.normal(4, 1))),
-            "dns_resolution_ms": float(max(0.0, rng.normal(20, 5))),
-            "dhcp_event_class": "none",
-            "auth_event_class": auth_evt,
-            "captive_portal_detected": False,
-            "mac_randomization_state": "off",
-            "driver_state": "normal",
-            "per_packet_retry_count": int(rng.integers(1, 8)),
-            "rts_cts_rate": None,
-            "beacon_rssi_dbm": bcn,
-            "neighbor_ap_count_5ghz": int(rng.integers(3, 9)),
-            "window_ms": WINDOW_MS,
-        })
+        frames.append(
+            {
+                "timestamp": t,
+                "os": os_choice,
+                "network_mode": "enterprise",
+                "rssi_dbm": rssi,
+                "bssid": bssid,
+                "bssid_mode": "hashed",
+                "channel": channel,
+                "ping_continuity": {
+                    "window_ms": SAMPLE_INTERVAL_MS,
+                    "avg_rtt_ms": avg_rtt,
+                    "packet_loss_pct": float(max(0.0, rng.normal(loss_baseline, 1))),
+                    "jitter_ms": float(max(0.0, rng.normal(4, 1))),
+                },
+                "latency_jitter_ms": float(max(0.0, rng.normal(4, 1))),
+                "dns_resolution_ms": float(max(0.0, rng.normal(20, 5))),
+                "dhcp_event_class": "none",
+                "auth_event_class": auth_evt,
+                "captive_portal_detected": False,
+                "mac_randomization_state": "off",
+                "driver_state": "normal",
+                "per_packet_retry_count": int(rng.integers(1, 8)),
+                "rts_cts_rate": None,
+                "beacon_rssi_dbm": bcn,
+                "neighbor_ap_count_5ghz": int(rng.integers(3, 9)),
+                "window_ms": WINDOW_MS,
+            }
+        )
     return frames
