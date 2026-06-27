@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest  # match HF Space build runner OS
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: true  # app.py imports inference.py which joblib.loads LFS artifacts
 
       - uses: actions/setup-python@v5
         with:
