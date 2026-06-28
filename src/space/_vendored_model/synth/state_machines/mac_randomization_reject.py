@@ -9,6 +9,7 @@ Causal sequence:
 Distinguishing signal: mac_randomization_state="rejected" throughout the window
 combined with 8021x_fail terminator (pre-disconnect — Pitfall 2).
 """
+
 from __future__ import annotations
 
 from hashlib import sha256
@@ -39,31 +40,33 @@ def generate(rng: Generator) -> list[dict[str, Any]]:
         bcn = max(-100, min(0, rssi - int(rng.integers(0, 3))))
         auth_evt = "8021x_fail" if i >= fail_at else "none"
 
-        frames.append({
-            "timestamp": t,
-            "os": os_choice,
-            "network_mode": "enterprise",
-            "rssi_dbm": rssi,
-            "bssid": bssid,
-            "bssid_mode": "hashed",
-            "channel": channel,
-            "ping_continuity": {
-                "window_ms": SAMPLE_INTERVAL_MS,
-                "avg_rtt_ms": None,
-                "packet_loss_pct": 100.0,  # never associated successfully
-                "jitter_ms": None,
-            },
-            "latency_jitter_ms": None,
-            "dns_resolution_ms": None,
-            "dhcp_event_class": "none",
-            "auth_event_class": auth_evt,
-            "captive_portal_detected": False,
-            "mac_randomization_state": "rejected",
-            "driver_state": "normal",
-            "per_packet_retry_count": None,
-            "rts_cts_rate": None,
-            "beacon_rssi_dbm": bcn,
-            "neighbor_ap_count_5ghz": int(rng.integers(2, 7)),
-            "window_ms": WINDOW_MS,
-        })
+        frames.append(
+            {
+                "timestamp": t,
+                "os": os_choice,
+                "network_mode": "enterprise",
+                "rssi_dbm": rssi,
+                "bssid": bssid,
+                "bssid_mode": "hashed",
+                "channel": channel,
+                "ping_continuity": {
+                    "window_ms": SAMPLE_INTERVAL_MS,
+                    "avg_rtt_ms": None,
+                    "packet_loss_pct": 100.0,  # never associated successfully
+                    "jitter_ms": None,
+                },
+                "latency_jitter_ms": None,
+                "dns_resolution_ms": None,
+                "dhcp_event_class": "none",
+                "auth_event_class": auth_evt,
+                "captive_portal_detected": False,
+                "mac_randomization_state": "rejected",
+                "driver_state": "normal",
+                "per_packet_retry_count": None,
+                "rts_cts_rate": None,
+                "beacon_rssi_dbm": bcn,
+                "neighbor_ap_count_5ghz": int(rng.integers(2, 7)),
+                "window_ms": WINDOW_MS,
+            }
+        )
     return frames

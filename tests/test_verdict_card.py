@@ -5,11 +5,11 @@ D-VERDICT-02 (top-3 alternatives always-visible + 'Show all 10' expander),
 D-VERDICT-03 (what-to-do card renders suggested_fix), D-VERDICT-04 (display
 name + slug subtitle), and D-VERDICT-07 (HIGH/MED/LOW text labels).
 """
+
 from __future__ import annotations
 
 from src.space.ui.verdict_card import _confidence_band, build_verdict_card
 from src.space.ui.what_to_do_card import build_what_to_do_card
-
 
 # --- D-VERDICT-01: confidence-band badge color thresholds -------------------
 
@@ -42,7 +42,7 @@ def test_low_confidence_red_badge(sample_verdict):
 def test_display_name_and_slug_both_shown(sample_verdict):
     html = build_verdict_card(sample_verdict)
     assert "802.1X authentication failure" in html  # display name
-    assert "auth_8021x_eap_fail" in html            # slug
+    assert "auth_8021x_eap_fail" in html  # slug
 
 
 # --- D-VERDICT-02: top-3 alternatives always-visible + 'Show all 10' --------

@@ -25,12 +25,21 @@ import to load the classifier + anomaly joblib artifacts once per Space
 process. ``redact_to_schema`` is imported at module load (not per-call) so
 the regex compile cost is paid once.
 """
+
 from __future__ import annotations
 
 import json
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 from pydantic import ValidationError
+
+# GAP-1 closure (Phase 6 plan 06-01): narrate the verdict before the
+# complete yield. Mirrors the agent's local-only pattern in
+# agent/inference.py::run_local_inference. Without this, the live SSE
+# path emits the Phase 2 stub headline ("Pre-Phase-3 stub: ...") and
+# an empty evidence list -- breaking Phase 5 Success Criterion #1.
+from wifi_diag_narrator.templated import narrate_templated
 from wifi_diag_schema import TelemetryFrame  # noqa: F401  (kept for type clarity)
 from wifi_diag_schema.handshake import IncompatibleSchemaError
 
@@ -43,13 +52,6 @@ from src.space.live.owner_session import (
     is_owner,
 )
 from src.space.live.redaction import redact_to_schema
-
-# GAP-1 closure (Phase 6 plan 06-01): narrate the verdict before the
-# complete yield. Mirrors the agent's local-only pattern in
-# agent/inference.py::run_local_inference. Without this, the live SSE
-# path emits the Phase 2 stub headline ("Pre-Phase-3 stub: ...") and
-# an empty evidence list -- breaking Phase 5 Success Criterion #1.
-from wifi_diag_narrator.templated import narrate_templated
 
 __all__ = ["live_diagnose", "_ORCH", "_SPACE_VERSION"]
 
@@ -194,11 +196,13 @@ def live_diagnose(
     # LLM-02 / Truth 3 of this plan).
     redacted_dicts = [f.model_dump() for f in redacted]
     narrated = narrate_templated(verdict, redacted_dicts)
-    verdict = verdict.model_copy(update={
-        "headline": narrated.headline,
-        "suggested_fix": narrated.suggested_fix,
-        "evidence": narrated.evidence,
-    })
+    verdict = verdict.model_copy(
+        update={
+            "headline": narrated.headline,
+            "suggested_fix": narrated.suggested_fix,
+            "evidence": narrated.evidence,
+        }
+    )
 
     # ------------------------------------------------------------------
     # 7. Final verdict (terminal).

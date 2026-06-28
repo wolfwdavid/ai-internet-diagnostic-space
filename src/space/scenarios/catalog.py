@@ -9,6 +9,7 @@ narrations deterministically) and a network_mode tag that drives the Phase 2
 mask-then-renormalize step (D-CAL-09 -- the LAST frame's network_mode is what
 ``apply_mask_and_renormalize`` masks against).
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -55,8 +56,7 @@ SCENARIOS: list[Scenario] = [
         slug="school_radius_overload",
         display_name="school RADIUS overload at the bell",
         description=(
-            "Class change -- many laptops re-auth simultaneously; "
-            "RADIUS server saturates."
+            "Class change -- many laptops re-auth simultaneously; RADIUS server saturates."
         ),
         class_slug="radius_timeout",
         network_mode="enterprise",
@@ -93,9 +93,7 @@ SCENARIOS: list[Scenario] = [
     Scenario(
         slug="dhcp_pool_exhausted",
         display_name="DHCP pool exhausted at conference",
-        description=(
-            "Conference floor -- DHCP pool runs out; DISCOVER goes unanswered."
-        ),
+        description=("Conference floor -- DHCP pool runs out; DISCOVER goes unanswered."),
         class_slug="dhcp_lease_churn",
         network_mode="enterprise",
         seed=20260605,

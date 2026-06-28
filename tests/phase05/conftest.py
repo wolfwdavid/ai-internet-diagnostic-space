@@ -9,6 +9,7 @@
   same 32 deterministic bytes so cross-repo byte-equality tests can compare
   ``model_dump_json()`` outputs without spurious salt mismatch.
 """
+
 from __future__ import annotations
 
 import json
@@ -53,6 +54,7 @@ def pinned_salt(monkeypatch) -> bytes:
     # Patch Space-side salt loader (lazy — module may not yet exist in Wave 0)
     try:
         from src.space.live import redaction as _space_red  # noqa: F401
+
         monkeypatch.setattr(
             "src.space.live.redaction._load_space_salt",
             lambda: salt,
@@ -67,12 +69,12 @@ def pinned_salt(monkeypatch) -> bytes:
         sys.path.insert(0, agent_repo)
     try:
         import agent.salt as _agent_salt  # noqa: F401
+
         monkeypatch.setattr("agent.salt.load_or_create_salt", lambda: salt, raising=False)
         # agent.redaction imports load_or_create_salt at the top; patch the bound name too.
         import agent.redaction as _agent_red  # noqa: F401
-        monkeypatch.setattr(
-            "agent.redaction.load_or_create_salt", lambda: salt, raising=False
-        )
+
+        monkeypatch.setattr("agent.redaction.load_or_create_salt", lambda: salt, raising=False)
     except ImportError:
         pass
 
@@ -85,9 +87,18 @@ def agent_redact_fn(pinned_salt):
 
     Patches sys.path with the sibling agent repo and returns the callable.
     Depends on ``pinned_salt`` so any BSSID hashing uses the deterministic salt.
+
+    Skips when the agent sibling repo is not checked out (e.g. the Space's own
+    CI, which clones the Space repo alone). Cross-repo byte-equality is enforced
+    in the dispatch-level .planning/tools gate where all siblings are present.
     """
+    if not _AGENT_REPO.exists():
+        pytest.skip(
+            "agent sibling repo not checked out; cross-repo parity runs in the dispatch gate"
+        )
     agent_repo = str(_AGENT_REPO)
     if agent_repo not in sys.path:
         sys.path.insert(0, agent_repo)
     from agent.redaction import redact_to_schema as _AGENT_REDACT
+
     return _AGENT_REDACT

@@ -6,6 +6,7 @@ the incoming HandshakeFrame, runs the version compatibility check, and returns
 ``check_compatibility`` raises ``IncompatibleSchemaError`` -- the caller
 (``live_diagnose``) catches it and yields ``state=schema_mismatch``.
 """
+
 from __future__ import annotations
 
 from typing import Literal

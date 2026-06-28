@@ -5,6 +5,7 @@ deployed HF Space (Pattern 5 / Pitfall B cannot be verified from a unit
 test alone). These tests exist only to keep the spike code from rotting
 silently in the repo while the spike is deployed and evaluated.
 """
+
 from __future__ import annotations
 
 import plotly.graph_objects as go

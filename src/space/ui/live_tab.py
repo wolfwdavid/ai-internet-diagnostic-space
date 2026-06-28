@@ -25,17 +25,18 @@ Layout (per D-STATUS-06):
 This module does NOT own the banner -- that is page-level (D-STATUS-02 /
 D-STATUS-11) and instantiated in ``app.py`` above the ``gr.Tabs()`` block.
 """
+
 from __future__ import annotations
 
 from typing import Any
 
 import gradio as gr
 
+from src.space.ui.timeline import build_timeline  # noqa: F401
+
 # Phase 3 builders reused by composition (UI-07 ROADMAP criterion).
 from src.space.ui.verdict_card import build_verdict_card  # noqa: F401
 from src.space.ui.what_to_do_card import build_what_to_do_card  # noqa: F401
-from src.space.ui.timeline import build_timeline  # noqa: F401
-
 
 _AGENT_REPO_URL = "https://github.com/wolfwdavid/ai-internet-diagnostic-agent"
 

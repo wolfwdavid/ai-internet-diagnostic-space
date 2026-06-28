@@ -4,6 +4,7 @@ Vendored from ai-internet-diagnostic-model v1.0.0 -- DO NOT edit; resync via
 `make resync-model` (Phase 5). The only modification from the source is the
 relative-import rewrite below (`model.features` -> `.features`).
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -18,26 +19,41 @@ from .features import CATEGORICAL_FEATURES, CLASSES, CLASSIFIER_FEATURES
 
 # D-MASK-02 mask table (frozen at v1; mirrored in MODEL_CARD.md)
 MASK_TABLE: dict[NetworkMode, frozenset[DisconnectClass]] = {
-    "enterprise": frozenset([
-        "auth_8021x_eap_fail", "ap_roam_rekey_fail", "radius_timeout",
-        "mac_randomization_reject", "dhcp_lease_churn", "dns_resolver_fail",
-        "driver_power_save_wake", "rf_sticky_client",
-    ]),
-    "captive": frozenset([
-        "captive_portal_expiry", "dns_resolver_fail", "isp_upstream_fail",
-        "dhcp_lease_churn", "mac_randomization_reject",
-    ]),
-    "home": frozenset([
-        "dhcp_lease_churn", "dns_resolver_fail", "driver_power_save_wake",
-        "rf_sticky_client", "isp_upstream_fail",
-    ]),
+    "enterprise": frozenset(
+        [
+            "auth_8021x_eap_fail",
+            "ap_roam_rekey_fail",
+            "radius_timeout",
+            "mac_randomization_reject",
+            "dhcp_lease_churn",
+            "dns_resolver_fail",
+            "driver_power_save_wake",
+            "rf_sticky_client",
+        ]
+    ),
+    "captive": frozenset(
+        [
+            "captive_portal_expiry",
+            "dns_resolver_fail",
+            "isp_upstream_fail",
+            "dhcp_lease_churn",
+            "mac_randomization_reject",
+        ]
+    ),
+    "home": frozenset(
+        [
+            "dhcp_lease_churn",
+            "dns_resolver_fail",
+            "driver_power_save_wake",
+            "rf_sticky_client",
+            "isp_upstream_fail",
+        ]
+    ),
     "unknown": frozenset(CLASSES),  # D-MASK-03: all 10 enabled
 }
 
 
-def apply_mask_and_renormalize(
-    probs: np.ndarray, network_mode: NetworkMode
-) -> np.ndarray:
+def apply_mask_and_renormalize(probs: np.ndarray, network_mode: NetworkMode) -> np.ndarray:
     """D-CAL-09: zero masked classes, renormalize remainder to sum to 1.
 
     probs: shape (10,) calibrated probabilities, ordered per CLASSES.
@@ -98,8 +114,8 @@ def predict_verdict(
     clf = joblib.load(classifier_path)
     X = _frames_to_array(frames)
 
-    proba_per_frame = clf.predict_proba(X)              # (n_frames, 10)
-    proba_window = proba_per_frame.mean(axis=0)         # (10,)
+    proba_per_frame = clf.predict_proba(X)  # (n_frames, 10)
+    proba_window = proba_per_frame.mean(axis=0)  # (10,)
 
     network_mode: NetworkMode = frames[-1]["network_mode"]
     proba_masked = apply_mask_and_renormalize(proba_window, network_mode)
@@ -117,10 +133,7 @@ def predict_verdict(
         top_k=top_k,
         # Phase 2 produces structurally valid Verdicts; Phase 3 fills these
         # with LLM narrator output. Stub strings keep the schema valid here.
-        headline=(
-            f"Pre-Phase-3 stub: classifier predicts {top_class} "
-            f"({confidence:.0%})"
-        ),
+        headline=(f"Pre-Phase-3 stub: classifier predicts {top_class} ({confidence:.0%})"),
         suggested_fix="Pre-Phase-3 stub: see Phase 3 narrator integration.",
         evidence=[],
     )

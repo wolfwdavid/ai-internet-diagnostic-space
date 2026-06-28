@@ -11,25 +11,41 @@ The pattern mirrors ``../ai-internet-diagnostic-agent/tests/test_redaction_round
 Marked xfail-strict during Wave 0; Task 1 lands the Space-side redaction module and the
 test turns GREEN.
 """
+
 from __future__ import annotations
 
-from hypothesis import HealthCheck, given, settings, strategies as st
+from hypothesis import HealthCheck, given, settings
+from hypothesis import strategies as st
 
-PII_PAYLOADS = st.fixed_dictionaries({
-    "evt_xml": st.sampled_from([
-        '<EventData><Data Name="Identity">student@school.edu</Data></EventData>',
-        '<EventData><Data Name="Reason">RADIUS_TIMEOUT</Data><Data Name="UserCert">CN=John Doe,OU=Students</Data></EventData>',
-        '<EventData><Data Name="EapMethod">25</Data><Data Name="Password">hunter2</Data></EventData>',
-        '<EventData><Data Name="Identity">teacher@school.edu</Data><Data Name="MAC">aa:bb:cc:dd:ee:ff</Data></EventData>',
-        '<EventData><Data Name="CertSubject">CN=root.example.com,O=ACME</Data></EventData>',
-    ]),
-    "ts": st.floats(min_value=1700000000.0, max_value=2000000000.0,
-                    allow_nan=False, allow_infinity=False),
-    "rssi": st.integers(min_value=-95, max_value=-30),
-    "os": st.sampled_from(["windows", "macos", "linux"]),
-    "network_mode": st.sampled_from(["enterprise", "captive", "home", "unknown"]),
-    "raw_bssid": st.sampled_from(["aa:bb:cc:dd:ee:ff", "11:22:33:44:55:66"]),
-})
+PII_PAYLOADS = st.fixed_dictionaries(
+    {
+        "evt_xml": st.sampled_from(
+            [
+                '<EventData><Data Name="Identity">student@school.edu</Data></EventData>',
+                (
+                    '<EventData><Data Name="Reason">RADIUS_TIMEOUT</Data>'
+                    '<Data Name="UserCert">CN=John Doe,OU=Students</Data></EventData>'
+                ),
+                (
+                    '<EventData><Data Name="EapMethod">25</Data>'
+                    '<Data Name="Password">hunter2</Data></EventData>'
+                ),
+                (
+                    '<EventData><Data Name="Identity">teacher@school.edu</Data>'
+                    '<Data Name="MAC">aa:bb:cc:dd:ee:ff</Data></EventData>'
+                ),
+                '<EventData><Data Name="CertSubject">CN=root.example.com,O=ACME</Data></EventData>',
+            ]
+        ),
+        "ts": st.floats(
+            min_value=1700000000.0, max_value=2000000000.0, allow_nan=False, allow_infinity=False
+        ),
+        "rssi": st.integers(min_value=-95, max_value=-30),
+        "os": st.sampled_from(["windows", "macos", "linux"]),
+        "network_mode": st.sampled_from(["enterprise", "captive", "home", "unknown"]),
+        "raw_bssid": st.sampled_from(["aa:bb:cc:dd:ee:ff", "11:22:33:44:55:66"]),
+    }
+)
 
 
 @given(payload=PII_PAYLOADS)
@@ -50,8 +66,7 @@ def test_space_and_agent_redaction_byte_equal(pinned_salt, agent_redact_fn, payl
     space_out = space_redact(dict(payload)).model_dump_json()
     agent_out = agent_redact_fn(dict(payload)).model_dump_json()
     assert space_out == agent_out, (
-        "Space and agent redaction outputs diverged:\n"
-        f"space: {space_out!r}\nagent: {agent_out!r}"
+        f"Space and agent redaction outputs diverged:\nspace: {space_out!r}\nagent: {agent_out!r}"
     )
 
 

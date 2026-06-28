@@ -4,6 +4,7 @@ Vendored from ai-internet-diagnostic-model v1.0.0 -- DO NOT edit; resync via
 `make resync-model` (Phase 5). The only modification from the source is the
 relative-import rewrite below (`model.synth.state_machines` -> `.synth.state_machines`).
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -81,8 +82,6 @@ def load_anomaly_features(
     X_anom = df[list(ANOMALY_FEATURES)].to_numpy(dtype=np.float64)
 
     class_lookup = {slug: i for i, slug in enumerate(CLASSES)}
-    y_int = np.array(
-        [class_lookup.get(c, -1) for c in df["class"].tolist()], dtype=np.int64
-    )
+    y_int = np.array([class_lookup.get(c, -1) for c in df["class"].tolist()], dtype=np.int64)
     ts = df["timestamp"].to_numpy()
     return X_anom, y_int, ts

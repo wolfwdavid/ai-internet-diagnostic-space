@@ -10,6 +10,7 @@ Causal sequence:
 Distinguishing signal: BSSID constant, RSSI declining toward -85, retries
 climbing, AND neighbor_ap_count_5ghz reports better candidates available.
 """
+
 from __future__ import annotations
 
 from hashlib import sha256
@@ -41,31 +42,33 @@ def generate(rng: Generator) -> list[dict[str, Any]]:
         retries = int(2 + progress * 13 + rng.integers(-1, 2))
         retries = max(0, retries)
 
-        frames.append({
-            "timestamp": t,
-            "os": os_choice,
-            "network_mode": "enterprise",
-            "rssi_dbm": rssi,
-            "bssid": bssid,
-            "bssid_mode": "hashed",
-            "channel": channel,
-            "ping_continuity": {
-                "window_ms": SAMPLE_INTERVAL_MS,
-                "avg_rtt_ms": float(20 + progress * 80 + rng.normal(0, 5)),
-                "packet_loss_pct": float(max(0.0, progress * 5 + rng.normal(0, 1))),
-                "jitter_ms": float(max(0.0, 3 + progress * 7 + rng.normal(0, 1))),
-            },
-            "latency_jitter_ms": float(max(0.0, 3 + progress * 7 + rng.normal(0, 1))),
-            "dns_resolution_ms": float(max(0.0, 20 + progress * 30 + rng.normal(0, 3))),
-            "dhcp_event_class": "none",
-            "auth_event_class": "8021x_success",
-            "captive_portal_detected": False,
-            "mac_randomization_state": "off",
-            "driver_state": "normal",
-            "per_packet_retry_count": retries,
-            "rts_cts_rate": float(rng.uniform(0.05, 0.25)),
-            "beacon_rssi_dbm": bcn,
-            "neighbor_ap_count_5ghz": int(rng.integers(5, 10)),  # healthier neighbors visible
-            "window_ms": WINDOW_MS,
-        })
+        frames.append(
+            {
+                "timestamp": t,
+                "os": os_choice,
+                "network_mode": "enterprise",
+                "rssi_dbm": rssi,
+                "bssid": bssid,
+                "bssid_mode": "hashed",
+                "channel": channel,
+                "ping_continuity": {
+                    "window_ms": SAMPLE_INTERVAL_MS,
+                    "avg_rtt_ms": float(20 + progress * 80 + rng.normal(0, 5)),
+                    "packet_loss_pct": float(max(0.0, progress * 5 + rng.normal(0, 1))),
+                    "jitter_ms": float(max(0.0, 3 + progress * 7 + rng.normal(0, 1))),
+                },
+                "latency_jitter_ms": float(max(0.0, 3 + progress * 7 + rng.normal(0, 1))),
+                "dns_resolution_ms": float(max(0.0, 20 + progress * 30 + rng.normal(0, 3))),
+                "dhcp_event_class": "none",
+                "auth_event_class": "8021x_success",
+                "captive_portal_detected": False,
+                "mac_randomization_state": "off",
+                "driver_state": "normal",
+                "per_packet_retry_count": retries,
+                "rts_cts_rate": float(rng.uniform(0.05, 0.25)),
+                "beacon_rssi_dbm": bcn,
+                "neighbor_ap_count_5ghz": int(rng.integers(5, 10)),  # healthier neighbors visible
+                "window_ms": WINDOW_MS,
+            }
+        )
     return frames

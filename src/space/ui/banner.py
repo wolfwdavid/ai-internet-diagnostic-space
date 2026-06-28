@@ -27,6 +27,7 @@ The shape of ``state_dict`` is the chunk shape plan 05-01 yields:
 "total": int, "error": str, "reason": str, "session_key": str (NOT
 rendered), "owner_key": str (NOT rendered), "agent_version": str (optional)}``.
 """
+
 from __future__ import annotations
 
 import html
@@ -80,9 +81,7 @@ _STATE_TEXT: dict[str, tuple[str, str]] = {
 _PRIVACY_CHIP = "redacted • BSSIDs hashed • no credentials"
 
 # States that get the version strip (D-STATUS-19).
-_VERSION_STATES = frozenset(
-    {"handshake_ok", "connected", "streaming", "computing", "complete"}
-)
+_VERSION_STATES = frozenset({"handshake_ok", "connected", "streaming", "computing", "complete"})
 
 # Allowlist of fields safe to format into the detail template. Anything not
 # in this set is dropped — keeps owner_key / session_key out of rendered HTML
@@ -147,12 +146,8 @@ def render_banner(state_dict: dict[str, Any] | None) -> str:
 
         versions_html = ""
         if state in _VERSION_STATES:
-            agent_v = html.escape(
-                str(state_dict.get("agent_version", _DEFAULT_AGENT_VERSION))
-            )
-            schema_v = html.escape(
-                str(state_dict.get("schema_version", _SCHEMA_VERSION))
-            )
+            agent_v = html.escape(str(state_dict.get("agent_version", _DEFAULT_AGENT_VERSION)))
+            schema_v = html.escape(str(state_dict.get("schema_version", _SCHEMA_VERSION)))
             versions_html = (
                 f'<span class="conn-versions">'
                 f"Space v{_SPACE_VERSION} • Agent v{agent_v} • Schema v{schema_v}"

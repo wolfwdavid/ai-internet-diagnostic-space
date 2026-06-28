@@ -9,6 +9,7 @@ schema-valid Verdict + the per-frame anomaly score series for the timeline.
 The vendored Phase 2 model code lives under ``_vendored_model/`` so the
 Space can compute real classifier output without round-tripping the Hub.
 """
+
 from __future__ import annotations
 
 from pathlib import Path

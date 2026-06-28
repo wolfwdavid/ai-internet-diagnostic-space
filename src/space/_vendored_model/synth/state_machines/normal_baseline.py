@@ -7,6 +7,7 @@ union of inlier distributions across the 10 existing state machines.
 Pitfall 2 convention: pre-disconnect window only (still applies -- for
 normal_baseline the whole window stays healthy; there is no disconnect).
 """
+
 from __future__ import annotations
 
 from hashlib import sha256
@@ -69,32 +70,34 @@ def _normal_baseline_window(rng: Generator) -> list[dict[str, Any]]:
         neighbors = int(max(0, rng.poisson(3.0)))
         rts_cts = float(min(1.0, max(0.0, rng.normal(0.05, 0.02))))
 
-        frames.append({
-            "timestamp": ts,
-            "os": os_val,
-            "network_mode": net_mode,
-            "rssi_dbm": rssi,
-            "bssid": bssid_hash,
-            "bssid_mode": "hashed",
-            "channel": channel,
-            "ping_continuity": {
-                "window_ms": int(sample_interval_ms),
-                "avg_rtt_ms": avg_rtt,
-                "packet_loss_pct": packet_loss,
-                "jitter_ms": jitter,
-            },
-            "latency_jitter_ms": jitter,
-            "dns_resolution_ms": dns,
-            "dhcp_event_class": "none",
-            "auth_event_class": "8021x_success",  # canonical "no auth event" in trained data
-            "captive_portal_detected": False,
-            "mac_randomization_state": "off",
-            "driver_state": "normal",
-            "per_packet_retry_count": retries,
-            "rts_cts_rate": rts_cts,
-            "beacon_rssi_dbm": beacon,
-            "neighbor_ap_count_5ghz": neighbors,
-            "window_ms": int(window_ms),
-            "class": BASELINE_LABEL,
-        })
+        frames.append(
+            {
+                "timestamp": ts,
+                "os": os_val,
+                "network_mode": net_mode,
+                "rssi_dbm": rssi,
+                "bssid": bssid_hash,
+                "bssid_mode": "hashed",
+                "channel": channel,
+                "ping_continuity": {
+                    "window_ms": int(sample_interval_ms),
+                    "avg_rtt_ms": avg_rtt,
+                    "packet_loss_pct": packet_loss,
+                    "jitter_ms": jitter,
+                },
+                "latency_jitter_ms": jitter,
+                "dns_resolution_ms": dns,
+                "dhcp_event_class": "none",
+                "auth_event_class": "8021x_success",  # canonical "no auth event" in trained data
+                "captive_portal_detected": False,
+                "mac_randomization_state": "off",
+                "driver_state": "normal",
+                "per_packet_retry_count": retries,
+                "rts_cts_rate": rts_cts,
+                "beacon_rssi_dbm": beacon,
+                "neighbor_ap_count_5ghz": neighbors,
+                "window_ms": int(window_ms),
+                "class": BASELINE_LABEL,
+            }
+        )
     return frames

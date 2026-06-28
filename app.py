@@ -7,6 +7,7 @@ card, timeline, scenarios, narrator-cache, and exports.
 The runtime version assertions below are Pitfall 7 (gradio pin drift) and
 Pitfall F (python_version unquoted) mitigations. DO NOT remove.
 """
+
 from __future__ import annotations
 
 import os
@@ -16,19 +17,15 @@ from pathlib import Path
 import gradio as gr
 
 # Pitfall 7 + Pitfall F: runtime version assertions (DO NOT remove).
-assert gr.__version__.startswith("6.13"), (
-    f"Expected Gradio 6.13.x, got {gr.__version__}"
-)
-assert sys.version_info[:2] == (3, 13), (
-    f"Expected Python 3.13, got {sys.version_info}"
-)
+assert gr.__version__.startswith("6.13"), f"Expected Gradio 6.13.x, got {gr.__version__}"
+assert sys.version_info[:2] == (3, 13), f"Expected Python 3.13, got {sys.version_info}"
 
-from src.space.ui.cold_start import COLD_START_MARKDOWN  # noqa: E402
-from src.space.ui.synthetic_tab import build_synthetic_tab  # noqa: E402
+from src.space.live import status  # noqa: E402  # plan 05-03 poller source
 from src.space.live.live_diagnose import live_diagnose  # noqa: E402  # plan 05-01
 from src.space.ui.banner import render_banner  # noqa: E402  # plan 05-03
+from src.space.ui.cold_start import COLD_START_MARKDOWN  # noqa: E402
 from src.space.ui.live_tab import build_live_tab  # noqa: E402  # plan 05-03
-from src.space.live import status  # noqa: E402  # plan 05-03 poller source
+from src.space.ui.synthetic_tab import build_synthetic_tab  # noqa: E402
 
 # Plan 05-03: load banner CSS once at module load -- gr.Blocks(css=...)
 # applies it page-wide so the banner + transition fade (D-STATUS-28) work

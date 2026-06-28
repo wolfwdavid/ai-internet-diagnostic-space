@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest  # match HF Space build runner OS
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: true  # app.py imports inference.py which joblib.loads LFS artifacts
 
       - uses: actions/setup-python@v5
         with:
@@ -21,8 +23,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           # Install Gradio at the version pinned in README frontmatter (6.13.x).
-          # HF Space build resolves Gradio from `sdk_version` in README; we mirror that here.
-          pip install "gradio>=6.13,<7.0"
+          # HF Space build resolves Gradio from `sdk_version` in README; we mirror
+          # that here. Pin to <6.14 so the version assert below keeps mirroring the
+          # README's sdk_version (6.13.0) instead of floating to the latest 6.x.
+          pip install "gradio>=6.13,<6.14"
 
       - name: Verify Gradio version pin (Pitfall 7 mitigation)
         run: |

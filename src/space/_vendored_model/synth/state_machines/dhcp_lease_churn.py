@@ -8,6 +8,7 @@ Causal sequence:
 Distinguishing signal: dhcp_event_class cycles through discover_no_offer,
 nak_on_renew, request_loop while DNS lookups fail (no usable resolver).
 """
+
 from __future__ import annotations
 
 from hashlib import sha256
@@ -41,31 +42,33 @@ def generate(rng: Generator) -> list[dict[str, Any]]:
         rssi = max(-100, min(0, rssi))
         bcn = max(-100, min(0, rssi - int(rng.integers(0, 3))))
 
-        frames.append({
-            "timestamp": t,
-            "os": os_choice,
-            "network_mode": "enterprise",
-            "rssi_dbm": rssi,
-            "bssid": bssid,
-            "bssid_mode": "hashed",
-            "channel": channel,
-            "ping_continuity": {
-                "window_ms": SAMPLE_INTERVAL_MS,
-                "avg_rtt_ms": None,  # no IP, no ping
-                "packet_loss_pct": 100.0,
-                "jitter_ms": None,
-            },
-            "latency_jitter_ms": None,
-            "dns_resolution_ms": None,  # DNS unusable without lease
-            "dhcp_event_class": dhcp_evt,
-            "auth_event_class": "8021x_success",
-            "captive_portal_detected": False,
-            "mac_randomization_state": "off",
-            "driver_state": "normal",
-            "per_packet_retry_count": None,
-            "rts_cts_rate": None,
-            "beacon_rssi_dbm": bcn,
-            "neighbor_ap_count_5ghz": int(rng.integers(2, 7)),
-            "window_ms": WINDOW_MS,
-        })
+        frames.append(
+            {
+                "timestamp": t,
+                "os": os_choice,
+                "network_mode": "enterprise",
+                "rssi_dbm": rssi,
+                "bssid": bssid,
+                "bssid_mode": "hashed",
+                "channel": channel,
+                "ping_continuity": {
+                    "window_ms": SAMPLE_INTERVAL_MS,
+                    "avg_rtt_ms": None,  # no IP, no ping
+                    "packet_loss_pct": 100.0,
+                    "jitter_ms": None,
+                },
+                "latency_jitter_ms": None,
+                "dns_resolution_ms": None,  # DNS unusable without lease
+                "dhcp_event_class": dhcp_evt,
+                "auth_event_class": "8021x_success",
+                "captive_portal_detected": False,
+                "mac_randomization_state": "off",
+                "driver_state": "normal",
+                "per_packet_retry_count": None,
+                "rts_cts_rate": None,
+                "beacon_rssi_dbm": bcn,
+                "neighbor_ap_count_5ghz": int(rng.integers(2, 7)),
+                "window_ms": WINDOW_MS,
+            }
+        )
     return frames

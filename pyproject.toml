@@ -7,7 +7,7 @@ license = { text = "Apache-2.0" }
 requires-python = ">=3.13"
 authors = [{ name = "WolfDavid", email = "mkarurosun@gmail.com" }]
 dependencies = [
-    "wifi-diag-schema>=1.1.0,<2.0.0",
+    "wifi-diag-schema>=1.2,<2.0",
     # Bumped 06-03: v0.1.0 lacked public-API re-exports; v0.1.1 is the first
     # PyPI release with `from wifi_diag_narrator import narrate_templated, ...`.
     "wifi-diag-narrator>=0.1.1,<0.2.0",  # plan 03-04: templated + LLM narrator + citation guardrail
@@ -72,6 +72,15 @@ target-version = "py313"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "W"]
+
+# redaction.py is vendored byte-equal from the agent (parity is asserted by
+# tests/phase05/test_redaction_match_across_repos.py). It must NOT be
+# reformatted or have lines wrapped, or the parity check breaks.
+[tool.ruff.lint.per-file-ignores]
+"src/space/live/redaction.py" = ["E501"]
+
+[tool.ruff.format]
+exclude = ["src/space/live/redaction.py"]
 
 [tool.mypy]
 python_version = "3.13"

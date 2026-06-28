@@ -12,11 +12,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: true  # artifacts/*.joblib are LFS; joblib.load needs the real blobs
 
       - uses: astral-sh/setup-uv@v4
         with:
           enable-cache: true
           cache-dependency-glob: "**/pyproject.toml"
+
+      - name: Install OpenMP runtime (macOS)
+        # LightGBM's native lib_lightgbm.dylib links @rpath/libomp.dylib, which
+        # macOS runners don't ship by default — without it joblib.load() of the
+        # LightGBM model raises OSError at import. Linux/Windows bundle their own.
+        if: runner.os == 'macOS'
+        run: brew install libomp
 
       - name: Install Python
         run: uv python install ${{ matrix.python-version }}

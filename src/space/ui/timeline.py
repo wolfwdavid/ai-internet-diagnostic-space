@@ -33,20 +33,21 @@ Anomaly band (D-TIMELINE-02 + D-TIMELINE-11): contiguous runs where
 Lead-time arrow (D-TIMELINE-06): ``add_annotation`` from the first
   red-band frame to the disconnect with ``lead-time: Xs`` label.
 """
+
 from __future__ import annotations
 
-from typing import Any, Iterable, Sequence
+from collections.abc import Iterable, Sequence
+from typing import Any
 
 import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-
 # Event-class -> color (D-TIMELINE-07).
 _EVENT_COLORS: dict[str, str] = {
-    "auth": "#3b82f6",     # blue
-    "dhcp": "#f59e0b",     # orange
-    "dns": "#10b981",      # green
+    "auth": "#3b82f6",  # blue
+    "dhcp": "#f59e0b",  # orange
+    "dns": "#10b981",  # green
     "captive": "#8b5cf6",  # purple
 }
 
@@ -125,9 +126,7 @@ def build_timeline(
         lead-time arrow, and event markers.
     """
     n = len(frames)
-    timestamps: list[float] = [
-        float(f.get("timestamp", i)) for i, f in enumerate(frames)
-    ]
+    timestamps: list[float] = [float(f.get("timestamp", i)) for i, f in enumerate(frames)]
     x = _x_axis(timestamps)
 
     rssi = [_safe_get(f, "rssi_dbm", 0.0) for f in frames]
@@ -138,7 +137,9 @@ def build_timeline(
     dns = [_safe_get(f, "dns_resolution_ms", 0.0) for f in frames]
 
     # D-TIMELINE-04: 4 stacked subplot panels (RSSI / Ping / DNS / Events).
-    fig = make_subplots(rows=4, cols=1,
+    fig = make_subplots(
+        rows=4,
+        cols=1,
         shared_xaxes=True,
         vertical_spacing=0.05,
         row_heights=[0.30, 0.30, 0.20, 0.20],
@@ -177,26 +178,35 @@ def build_timeline(
 
     # -- Row 2: Ping RTT / jitter / packet loss.
     fig.add_trace(
-        go.Scatter(x=x, y=rtt, mode="lines", name="rtt_ms",
-                   line=dict(color="#ff7f0e")),
-        row=2, col=1,
+        go.Scatter(x=x, y=rtt, mode="lines", name="rtt_ms", line=dict(color="#ff7f0e")),
+        row=2,
+        col=1,
     )
     fig.add_trace(
-        go.Scatter(x=x, y=jitter, mode="lines", name="jitter_ms",
-                   line=dict(color="#ffbb78", dash="dash")),
-        row=2, col=1,
+        go.Scatter(
+            x=x, y=jitter, mode="lines", name="jitter_ms", line=dict(color="#ffbb78", dash="dash")
+        ),
+        row=2,
+        col=1,
     )
     fig.add_trace(
-        go.Scatter(x=x, y=loss, mode="lines", name="loss_pct",
-                   line=dict(color="#d62728", dash="dot"), yaxis="y2"),
-        row=2, col=1,
+        go.Scatter(
+            x=x,
+            y=loss,
+            mode="lines",
+            name="loss_pct",
+            line=dict(color="#d62728", dash="dot"),
+            yaxis="y2",
+        ),
+        row=2,
+        col=1,
     )
 
     # -- Row 3: DNS resolution.
     fig.add_trace(
-        go.Scatter(x=x, y=dns, mode="lines", name="dns_ms",
-                   line=dict(color="#2ca02c")),
-        row=3, col=1,
+        go.Scatter(x=x, y=dns, mode="lines", name="dns_ms", line=dict(color="#2ca02c")),
+        row=3,
+        col=1,
     )
 
     # -- Row 4: event markers (D-TIMELINE-07).
@@ -212,21 +222,23 @@ def build_timeline(
             hoverinfo="skip",
             name="events_baseline",
         ),
-        row=4, col=1,
+        row=4,
+        col=1,
     )
     for i, frame in enumerate(frames):
         auth = _safe_get(frame, "auth_event_class", "none")
         dhcp = _safe_get(frame, "dhcp_event_class", "none")
         captive = bool(_safe_get(frame, "captive_portal_detected", False))
-        dns_class = "fail" if (
-            (_safe_get(frame, "dns_resolution_ms", 0.0) or 0.0) > 200.0
-        ) else "none"
+        dns_class = (
+            "fail" if ((_safe_get(frame, "dns_resolution_ms", 0.0) or 0.0) > 200.0) else "none"
+        )
         # auth (blue)
         if auth and auth != "none":
             fig.add_vline(
                 x=x[i],
                 line=dict(color=_EVENT_COLORS["auth"], width=2),
-                row=4, col=1,
+                row=4,
+                col=1,
                 annotation_text=str(auth),
                 annotation_position="top",
                 annotation_font=dict(color=_EVENT_COLORS["auth"], size=10),
@@ -236,7 +248,8 @@ def build_timeline(
             fig.add_vline(
                 x=x[i],
                 line=dict(color=_EVENT_COLORS["dhcp"], width=2),
-                row=4, col=1,
+                row=4,
+                col=1,
                 annotation_text=str(dhcp),
                 annotation_position="top",
                 annotation_font=dict(color=_EVENT_COLORS["dhcp"], size=10),
@@ -246,7 +259,8 @@ def build_timeline(
             fig.add_vline(
                 x=x[i],
                 line=dict(color=_EVENT_COLORS["dns"], width=2),
-                row=4, col=1,
+                row=4,
+                col=1,
                 annotation_text="dns_fail",
                 annotation_position="top",
                 annotation_font=dict(color=_EVENT_COLORS["dns"], size=10),
@@ -256,7 +270,8 @@ def build_timeline(
             fig.add_vline(
                 x=x[i],
                 line=dict(color=_EVENT_COLORS["captive"], width=2),
-                row=4, col=1,
+                row=4,
+                col=1,
                 annotation_text="captive",
                 annotation_position="top",
                 annotation_font=dict(color=_EVENT_COLORS["captive"], size=10),
@@ -270,9 +285,7 @@ def build_timeline(
         if scores_arr.shape[0] > n:
             scores_arr = scores_arr[:n]
         else:
-            scores_arr = np.concatenate(
-                [scores_arr, np.zeros(n - scores_arr.shape[0])]
-            )
+            scores_arr = np.concatenate([scores_arr, np.zeros(n - scores_arr.shape[0])])
     mask = (scores_arr > anomaly_threshold).tolist()
     runs = _find_runs(mask)
 

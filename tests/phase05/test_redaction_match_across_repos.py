@@ -9,18 +9,32 @@ repos.
 Marked xfail-strict during Wave 0; Task 1 lands the Space-side redaction.py
 and this test turns GREEN.
 """
+
 from __future__ import annotations
 
 import re
 from pathlib import Path
 
+import pytest
+
 _SPACE_REDACT = (
-    Path(__file__).resolve().parent.parent.parent
-    / "src" / "space" / "live" / "redaction.py"
+    Path(__file__).resolve().parent.parent.parent / "src" / "space" / "live" / "redaction.py"
 )
 _AGENT_REDACT = (
     Path(__file__).resolve().parent.parent.parent.parent
-    / "ai-internet-diagnostic-agent" / "agent" / "redaction.py"
+    / "ai-internet-diagnostic-agent"
+    / "agent"
+    / "redaction.py"
+)
+
+# The agent sibling repo is only present in a multi-repo checkout (local dev or
+# the dispatch-level .planning/tools cross-repo gate). The Space's own CI checks
+# out the Space repo alone, so skip the cross-repo parity assertions there —
+# in-repo redaction behavior is still guarded by the hypothesis property test
+# in test_server_side_redaction_roundtrip.py.
+_requires_agent_sibling = pytest.mark.skipif(
+    not _AGENT_REDACT.exists(),
+    reason="agent sibling repo not checked out; cross-repo parity runs in the dispatch gate",
 )
 
 # Match the DENY_PATTERNS list body across newlines.
@@ -35,6 +49,7 @@ def _normalize(s: str) -> str:
     return " ".join(s.split())
 
 
+@_requires_agent_sibling
 def test_deny_patterns_byte_equal():
     """The DENY_PATTERNS list in both redaction modules MUST be byte-equal modulo whitespace."""
     assert _SPACE_REDACT.exists(), f"missing: {_SPACE_REDACT}"
@@ -64,6 +79,7 @@ def test_space_redaction_has_vendor_marker():
     )
 
 
+@_requires_agent_sibling
 def test_schema_allowlist_present_in_both():
     """Both modules MUST define ``SCHEMA_ALLOWLIST: frozenset[str]``."""
     space_src = _SPACE_REDACT.read_text()

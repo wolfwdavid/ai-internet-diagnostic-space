@@ -20,11 +20,11 @@ API surface (consumed by ``synthetic_tab.card_click_handler``):
 The shape matches the inline stub in ``synthetic_tab.py`` so plan 03-03's
 defensive try/except import picks this module up automatically.
 """
+
 from __future__ import annotations
 
 from wifi_diag_schema.enums import DISPLAY_NAMES
 from wifi_diag_schema.verdict import Verdict
-
 
 # D-VERDICT-01: confidence-band thresholds.
 _HIGH_THRESHOLD = 0.80
@@ -83,31 +83,31 @@ def build_verdict_card(verdict: Verdict) -> str:
     # Remaining 7 -- 'Show all 10' expander (D-VERDICT-02).
     rest = verdict.top_k[3:]
     rest_html = "\n".join(
-        f"  <li>{int(round(p * 100))}% -- {DISPLAY_NAMES[c]} <code>{c}</code></li>"
-        for c, p in rest
+        f"  <li>{int(round(p * 100))}% -- {DISPLAY_NAMES[c]} <code>{c}</code></li>" for c, p in rest
     )
 
     return (
         '<div class="verdict-card">\n'
         f'  <h2 style="margin-bottom: 0.25em;">{display}</h2>\n'
-        f'  <div style="font-size: 0.85em; color: #6b7280;"><code>{verdict.top_class}</code></div>\n'
+        f'  <div style="font-size: 0.85em; color: #6b7280;">'
+        f"<code>{verdict.top_class}</code></div>\n"
         '  <div style="margin: 1em 0; display: flex; align-items: center; gap: 1em;">\n'
         f'    <span style="background:{color_hex}; color:white; padding:0.4em 1em; '
         'font-weight:bold; border-radius:6px;">\n'
-        f'      {pct}% &middot; {band}\n'
-        '    </span>\n'
+        f"      {pct}% &middot; {band}\n"
+        "    </span>\n"
         f'    <span style="color:{color_word};">confidence</span>\n'
-        '  </div>\n'
-        f'  <p>{verdict.headline}</p>\n'
-        '  <h4>Other possibilities</h4>\n'
-        '  <ul>\n'
-        f'{alts_html}\n'
-        '  </ul>\n'
-        '  <details>\n'
-        '    <summary>Show all 10</summary>\n'
-        '    <ul>\n'
-        f'{rest_html}\n'
-        '    </ul>\n'
-        '  </details>\n'
-        '</div>'
+        "  </div>\n"
+        f"  <p>{verdict.headline}</p>\n"
+        "  <h4>Other possibilities</h4>\n"
+        "  <ul>\n"
+        f"{alts_html}\n"
+        "  </ul>\n"
+        "  <details>\n"
+        "    <summary>Show all 10</summary>\n"
+        "    <ul>\n"
+        f"{rest_html}\n"
+        "    </ul>\n"
+        "  </details>\n"
+        "</div>"
     )

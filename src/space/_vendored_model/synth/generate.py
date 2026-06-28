@@ -4,6 +4,7 @@
 PCG64 + SeedSequence.spawn() guarantees byte-identical regeneration
 (RESEARCH Pattern 4, Pitfall 2 mitigation).
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -51,14 +52,27 @@ def _flatten_ping_continuity(frame: dict[str, Any]) -> dict[str, Any]:
 
 
 _COLUMNS: tuple[str, ...] = (
-    "timestamp", "os", "network_mode", "rssi_dbm", "bssid", "bssid_mode",
+    "timestamp",
+    "os",
+    "network_mode",
+    "rssi_dbm",
+    "bssid",
+    "bssid_mode",
     "channel",
-    "ping_continuity_window_ms", "ping_continuity_avg_rtt_ms",
-    "ping_continuity_packet_loss_pct", "ping_continuity_jitter_ms",
-    "latency_jitter_ms", "dns_resolution_ms",
-    "dhcp_event_class", "auth_event_class", "captive_portal_detected",
-    "mac_randomization_state", "driver_state",
-    "per_packet_retry_count", "rts_cts_rate", "beacon_rssi_dbm",
+    "ping_continuity_window_ms",
+    "ping_continuity_avg_rtt_ms",
+    "ping_continuity_packet_loss_pct",
+    "ping_continuity_jitter_ms",
+    "latency_jitter_ms",
+    "dns_resolution_ms",
+    "dhcp_event_class",
+    "auth_event_class",
+    "captive_portal_detected",
+    "mac_randomization_state",
+    "driver_state",
+    "per_packet_retry_count",
+    "rts_cts_rate",
+    "beacon_rssi_dbm",
     "neighbor_ap_count_5ghz",
     "window_ms",
     "class",

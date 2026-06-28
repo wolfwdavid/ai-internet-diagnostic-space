@@ -11,9 +11,11 @@ Covers:
 - Owner identity (owner_key / session_key raw) is never surfaced (D-STATUS-13).
 - schema_mismatch surfaces the error detail.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
+
 import pytest
 
 _IMPL = Path(__file__).resolve().parents[1].parent / "src" / "space" / "ui" / "banner.py"
@@ -24,7 +26,6 @@ if not _IMPL.exists():
     )
 
 from src.space.ui.banner import render_banner  # noqa: E402
-
 
 ALL_STATES = [
     "idle",
@@ -82,9 +83,7 @@ def test_role_status_always_present():
 
 
 def test_streaming_state_includes_privacy_chip():
-    html = render_banner(
-        {"state": "streaming", "frame_index": 47, "total": 120}
-    )
+    html = render_banner({"state": "streaming", "frame_index": 47, "total": 120})
     assert "redacted" in html
     assert "BSSIDs hashed" in html
     assert "no credentials" in html
@@ -129,9 +128,7 @@ def test_owner_identity_not_surfaced_in_text():
 
 
 def test_streaming_frame_counter_rendered():
-    html = render_banner(
-        {"state": "streaming", "frame_index": 47, "total": 120}
-    )
+    html = render_banner({"state": "streaming", "frame_index": 47, "total": 120})
     assert "47/120 frames" in html
 
 
